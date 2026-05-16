@@ -1,0 +1,1679 @@
+CORVUS LITE PRODUCT PLAN
+Built sentence by sentence from the early company definition conversation
+
+
+1. THE CORE IDEA
+
+Corvus Lite is a lightweight operations control panel for small manufacturers, starting with machine shops.
+
+It is not a cheaper MES.
+It is not a miniature ERP.
+It is not a full QMS.
+It is not an AI system that pretends to be a machinist.
+
+Corvus Lite is the operating layer for shops that still run on whiteboards, binders, spreadsheets, email inboxes, paper travelers, QuickBooks, tribal knowledge, and the owner's memory.
+
+The central product thesis:
+
+Corvus Lite helps small manufacturers know what is happening, what is blocked, what is late, what failed quality, and what needs to happen next, without forcing them to adopt a full MES, ERP, or QMS.
+
+The product begins as a system of awareness before it becomes a system of record.
+
+The first customer should feel:
+
+"I still run my shop. Corvus keeps the jobs, paperwork, files, blockers, handoffs, and follow-ups from slipping."
+
+
+2. WHO THIS IS FOR
+
+The first beachhead customer is a 5 to 50 person machine shop.
+
+This shop may have:
+
+- CNC mills
+- CNC lathes
+- Manual machines
+- A shop manager or owner who knows everything
+- A few machinists and operators
+- Paper travelers
+- Jobs tracked in Excel or on a whiteboard
+- Customer RFQs buried in email
+- Drawing PDFs and CAD files scattered across folders
+- Quality records in binders or spreadsheets
+- No real MES
+- No real QMS
+- Maybe QuickBooks
+- Maybe a shared drive
+- Maybe a shipping station
+
+The shop does not want a giant software implementation.
+The shop does not want a consultant.
+The shop does not want six weeks of setup.
+The shop does not want a rigid enterprise system that makes people feed the software all day.
+
+The shop wants fewer dropped balls, fewer late nights, fewer customer apologies, and less dependence on one exhausted person remembering everything.
+
+
+3. THE POSITIONING
+
+Possible positioning language:
+
+"Know every job, blocker, file, and handoff without buying an MES."
+
+"From paper travelers to production clarity in one afternoon."
+
+"The simplest way for a small shop to track jobs, quality, and shipping in one place."
+
+"A lightweight command center for machine shops that run on email, drawings, spreadsheets, and human judgment."
+
+"Corvus Lite is a control panel and chat-native operations assistant for small manufacturers."
+
+The important positioning boundary:
+
+Corvus Lite should not be sold as "AI agents for manufacturing."
+
+The customer does not care how many internal agents exist.
+The customer cares whether jobs are clear, people know what to do, and nothing important gets lost.
+
+
+4. THE PRODUCT FEELING
+
+Corvus Lite should feel calm, practical, and shop-native.
+
+It should not feel like enterprise software cosplay.
+It should not feel like a dashboard built for investors.
+It should not feel like a science project.
+
+It should feel like:
+
+- A daily control panel for the shop owner or manager
+- A job board that actually reflects the floor
+- A lightweight document and memory system
+- A coordinator that asks staff simple questions through chat
+- A place where RFQs, quotes, POs, drawings, travelers, quality records, and shipping readiness come together
+
+The best first impression:
+
+The user logs in and within 30 seconds understands:
+
+- What jobs are active
+- What jobs are at risk
+- What jobs are blocked
+- What jobs are waiting on material
+- What jobs are waiting on inspection
+- What jobs are ready to ship
+- What needs attention today
+
+
+5. THE PRIMARY USER-FACING OBJECTS
+
+The user should not primarily see agents.
+
+The user should see operational objects:
+
+- Jobs
+- Customers
+- Files
+- RFQs
+- Quotes
+- Purchase orders
+- Tasks
+- Issues / Bottlenecks
+- People
+- Quality signoffs
+- Shipments
+- Activity history
+
+Internally, Corvus may use many agents. Externally, the product should look like one coherent operations system.
+
+The main page could be called:
+
+- Command Center
+- Shop Board
+- Control Panel
+- Today
+- Operations Desk
+
+The strongest names are probably Command Center or Shop Board.
+
+
+6. THE THREE-LAYER PRODUCT MODEL
+
+Corvus Lite can be understood as three layers:
+
+Layer 1: Control Panel
+
+This is the visible application. It includes jobs, statuses, blockers, files, tasks, quality readiness, shipping readiness, and daily summaries.
+
+Layer 2: Communication Layer
+
+This is Slack, Teams, SMS, email, or another chat channel. Corvus asks staff simple questions, receives replies, and updates job records based on those replies.
+
+Layer 3: Agent Layer
+
+This is the invisible background execution layer. Specialized agents extract data, read drawings, compare documents, summarize activity, ask follow-up questions, and update structured records.
+
+Most users should never need to know which agent did what.
+
+An advanced/beta mode can expose an automation trace for debugging:
+
+- Which agent processed the message
+- What it extracted
+- Confidence level
+- What job record changed
+- What field changed
+- Why it asked a question
+
+But this should not be the normal user experience.
+
+
+7. THE TRUST BOUNDARY
+
+Corvus Lite must not pretend to be a machinist.
+
+This is a foundational design principle.
+
+Corvus can own:
+
+- Reading documents
+- Extracting structured data
+- Organizing files
+- Creating records
+- Comparing RFQs, quotes, POs, and drawings
+- Flagging mismatches
+- Flagging missing information
+- Flagging obvious risks
+- Asking staff simple follow-up questions
+- Drafting quote language
+- Drafting customer updates
+- Preparing traveler drafts
+- Tracking job state
+- Tracking issues and bottlenecks
+- Tracking signoffs
+- Remembering past jobs
+
+Humans own:
+
+- Whether the shop can actually make the part
+- Final quote approval
+- Final price
+- Setup time
+- Cycle time
+- Tooling decisions
+- Work instructions
+- Final committed delivery date
+- Final traveler approval
+- Quality signoff
+- Shipping approval
+
+The correct behavior is:
+
+"I extracted the requirements, found three risk areas, checked this against your shop profile, found a similar job from last year, and prepared a quote draft. Please confirm setup time, cycle time, material cost, and committed delivery date."
+
+The wrong behavior is:
+
+"This part will take 4.2 hours and should cost $1,183."
+
+Corvus should make human judgment easier to apply.
+It should not replace human judgment where the system cannot be trusted.
+
+Corvus should also avoid creating administrative overhead for the shop manager.
+
+If a workflow asks for more detail than the shop naturally needs, it is probably too heavy for Corvus Lite.
+
+The product should default to:
+
+- Simple statuses
+- Short checklists
+- Chat-based updates
+- Photos when helpful
+- Human approval at important gates
+
+It should avoid forcing:
+
+- Detailed operation routing
+- Excessive manual data entry
+- Setup documentation unless the shop wants it
+- Inventory precision the shop cannot realistically maintain
+
+
+8. CUSTOMER JOURNEY FOR A MACHINE SHOP
+
+The general flow of a machine shop job:
+
+1. Customer sends RFQ or inquiry.
+2. Shop reviews drawing, CAD, quantity, material, tolerances, special requirements, and requested due date.
+3. Shop decides whether to quote.
+4. Shop prepares and sends quote.
+5. Customer accepts and sends PO.
+6. Shop creates job.
+7. Shop confirms due date.
+8. Shop prepares material, files, traveler, and readiness checklist.
+9. Job enters the queue.
+10. Job moves into machining.
+11. Job is paused, blocked, or completed.
+12. Job goes to inspection if required.
+13. Job may require outside processing.
+14. Job becomes ready to ship.
+15. Job ships.
+16. The history becomes shop memory for future work.
+
+A clean Corvus Lite lifecycle:
+
+RFQ Intake
+-> Drawing Review
+-> Capability Check
+-> Quote Draft
+-> Human Quote Approval
+-> PO Intake
+-> Job Release
+-> Build Readiness
+-> Queued
+-> In Progress
+-> Machining Complete
+-> Quality Review
+-> Ready to Ship
+-> Shipped
+
+Optional branches:
+
+- Blocked
+- Outside Processing
+- Rework
+- Customer Clarification Needed
+
+
+9. RFQ / JOB INTAKE
+
+The first major workflow is RFQ intake.
+
+Inputs may include:
+
+- Customer email
+- Drawing PDF
+- CAD file if available
+- STEP file
+- DXF file
+- Quantity
+- Material requirement
+- Requested due date
+- Special notes
+- Tolerances called out in email
+- Attachments
+- Prior customer context
+
+The Job Intake function should turn messy inbound requests into a structured RFQ package.
+
+The first "wow" moment should be:
+
+"I forwarded three customer emails and uploaded two PDFs, and Corvus built my RFQ/job board."
+
+The system should extract:
+
+- Customer
+- Contact
+- Part number
+- Part name if available
+- Revision
+- Quantity
+- Material
+- Requested delivery date
+- Drawing files
+- CAD files
+- Special requirements
+- Finish requirements
+- Cert requirements
+- Notes from customer email
+- Missing information
+
+Extraction should include confidence levels.
+
+Example:
+
+Material: 6061-T6 Aluminum [high confidence]
+Quantity: 250 pcs [high confidence]
+Finish: Black anodize [medium confidence]
+Critical tolerance: +/- .0005 on bore diameter [medium confidence]
+Requested delivery: June 14 [high confidence]
+Missing: CAD file, inspection requirement, cert requirement
+
+The Job Intake function should create clarity, not pricing.
+
+
+10. DRAWING REVIEW
+
+The drawing review function reads drawing PDFs and extracts manufacturing-relevant information.
+
+This can be a separate background agent or a hidden part of intake.
+
+It should extract:
+
+- Part number
+- Revision
+- Material
+- Units
+- General tolerances
+- Tight tolerances
+- GD&T symbols
+- Surface finish requirements
+- Threads and tapped holes
+- Critical dimensions
+- Notes block
+- Finish/coating/plating notes
+- Heat treat notes
+- Deburring/chamfer notes
+- Inspection requirements
+- Cert requirements
+- Drawing scale
+- Page count
+- Revision history
+
+It should flag:
+
+- Very tight tolerances
+- Complex geometry
+- Deep pockets
+- Thin walls
+- Small radii
+- Threading requirements
+- Secondary operations
+- Outside process requirements
+- Missing dimensions
+- Conflicting notes
+- Old revision or unclear revision
+- Quality requirements that may affect shipment
+
+The drawing reader may eventually use RAG or a database of drawings, GD&T rules, and shop-specific examples.
+
+For v1, the more practical target is:
+
+"Here are the drawing notes that may affect quoting, production, inspection, or shipping."
+
+Not:
+
+"Here is a perfect manufacturability analysis."
+
+
+11. CAPABILITY CHECK
+
+The capability check compares the RFQ/drawing package against the shop profile.
+
+The shop profile should come from a setup wizard during company onboarding.
+
+This onboarding should feel practical, not like enterprise implementation paperwork.
+
+The setup wizard asks the company for capability information in plain language, then Corvus structures it into a stored capability document used by the compatibility check.
+
+The stored capability document may include:
+
+- Machine types
+- Machine work envelopes
+- Materials commonly handled
+- Materials avoided
+- In-house processes
+- Outside processes
+- Inspection equipment
+- Certifications
+- Preferred job types
+- Avoided job types
+- Known vendors
+- Minimum order size
+- Standard lead time rules
+
+The setup wizard can ask questions like:
+
+- What machines do you run?
+- What materials do you commonly machine?
+- What materials do you avoid?
+- What finishes or secondary processes do you do in-house?
+- What outside processes do you commonly send out?
+- What inspection equipment do you have?
+- What certifications do you support?
+- What job types do you prefer?
+- What job types should Corvus flag as risky?
+- What tolerances are routine, challenging, or outside normal comfort?
+
+For the sake of being AI-native, the capability check should not only be a static rules lookup.
+
+The structured capability document gives Corvus grounding.
+AI can then evaluate the RFQ/drawing package against that grounding and explain the result in human language.
+
+The capability check should combine:
+
+- Structured shop capability data
+- Drawing/RFQ extraction
+- Known shop preferences
+- Stored rules
+- AI evaluation of ambiguous requirements
+
+The capability check should flag obvious mismatches:
+
+- Part too large for the shop's machines
+- Required material is not supported
+- Required process is not in-house
+- Required certification is missing
+- Tolerance is beyond normal stated capability
+- Finish requires outside vendor
+- Customer requested unrealistic delivery
+
+The capability check should not attempt to identify every tool required.
+
+Tooling decisions belong to the machinist.
+
+The output should look like:
+
+Capability check:
+- Machining: likely compatible
+- Material: supported, 6061 aluminum
+- Finish: black anodize, outside vendor required
+- Inspection: bore tolerance may require CMM or bore gauge confirmation
+- Risk: requested delivery is aggressive based on current load
+
+The user should be able to inspect why Corvus reached that conclusion:
+
+- Which capability field was used
+- Which drawing note or RFQ requirement triggered the check
+- Whether the result came from a structured rule, AI interpretation, or both
+- What the human should confirm before quoting
+
+
+12. QUOTE PREP
+
+The quote workflow should prepare a quote draft, not autonomously price the job.
+
+Inputs:
+
+- RFQ package
+- Drawing review
+- Capability check
+- Similar historical jobs if available
+- Shop quote template
+- Human-provided estimates
+
+Human-provided fields:
+
+- Setup time
+- Cycle time per part
+- Programming time if needed
+- Tooling estimate if needed
+- User-entered material estimate
+- Outside processing estimate
+- Preferred margin
+- Committed delivery date
+
+The quote prep function can generate:
+
+- Quote draft
+- Assumptions
+- Exclusions
+- Lead time language
+- Customer-facing notes
+- Internal risk notes
+- Missing inputs before quote can be sent
+
+Good quote behavior:
+
+"I can draft this quote, but need 4 human inputs:
+1. Setup time
+2. Cycle time per part
+3. Material estimate
+4. Confirm whether anodize is customer-required"
+
+Then the machinist/shop manager fills those in.
+
+The system can create a sample quote that the shop reviews before sending.
+
+Corvus should not send quotes without approval.
+
+
+13. MATERIAL COSTING
+
+Material costing is useful but can wait.
+
+In the UI, material costing can appear as:
+
+Material Costing (coming soon)
+
+For v1, this should be user-driven.
+
+The machinist, shop manager, or estimator can enter the material estimate manually.
+Corvus can store it, include it in the quote draft, and remember it for future reference.
+
+In the future, a material costing function could:
+
+- Estimate material required from stock dimensions
+- Pull vendor pricing
+- Compare available inventory
+- Suggest order quantity
+- Account for scrap/drop
+- Identify cert requirements
+
+For v1, material cost can be entered by the user.
+
+Example:
+
+Material cost: entered by user
+Source: OnlineMetals quote / local supplier / internal inventory
+
+
+14. PO INTAKE
+
+Once a customer accepts a quote and sends a PO, Corvus creates or updates the production job.
+
+Inputs:
+
+- Customer PO
+- Accepted quote
+- Drawing/CAD package
+- Confirmed quantity
+- Confirmed due date
+- Customer requirements
+- Delivery address if present
+- Shipping instructions if present
+
+Outputs:
+
+- Job number
+- Job record
+- Linked PO
+- Linked quote
+- Linked drawing package
+- Confirmed quantity
+- Confirmed due date
+- Customer contact
+- Delivery instructions
+- Required docs
+- Initial job status
+- Traveler draft
+
+The PO intake function should compare the PO against the quote.
+
+This is a major value point.
+
+It should flag:
+
+- Quantity changed
+- Price mismatch
+- Due date changed
+- Revision changed
+- Material changed
+- Added quality requirement
+- Added cert requirement
+- Shipping terms changed
+- Customer referenced a different drawing
+
+Example:
+
+PO check:
+- Quantity matches quote: 100 pcs
+- Unit price matches quote: $18.40
+- Due date changed: quote said July 12, PO requests July 5
+- Drawing revision changed from Rev B to Rev C
+- New note: Certificate of Conformance required
+
+
+15. TRAVELER DRAFT
+
+The traveler is the bridge between admin software and shop-floor software.
+
+For v1, Corvus should create a traveler draft, not a full routing engine.
+
+The PO intake workflow can create a basic traveler shell:
+
+Job #: 1048
+Customer: Acme Robotics
+Part: Bracket-17
+Revision: C
+Quantity: 100
+Material: 6061-T6
+Due: July 12
+Files: drawing.pdf, bracket.step
+Required docs: C of C, final inspection
+Outside process: black anodize
+
+Corvus should not suggest detailed machining operations in v1.
+
+The machinist already knows how to make the part.
+
+The product should not create overhead by asking the shop manager to maintain operation-level paperwork unless the shop explicitly wants that later.
+
+From Corvus's perspective in v1, the part is being made.
+Corvus only needs enough state to understand whether the job is ready, active, blocked, complete, waiting inspection, ready to ship, or shipped.
+
+Corvus should support printable travelers with QR codes.
+
+The QR code can let a worker quickly open the job, update status, upload a photo, or answer a question.
+
+
+16. PLANNING AND SCHEDULING
+
+For v1, Corvus should not be a full scheduling engine.
+
+Full production scheduling gets complicated very quickly.
+
+Instead, frame this as:
+
+Job Release + Shop Flow
+
+From Job Intake to Job Start, every job should have a clear visual stage-by-stage flow.
+
+This is part of the UI, not a heavy scheduling engine.
+
+The flow should use arrows, stages, checkmarks, and a clear current-state highlight.
+The user should be able to click a job and immediately see where it is, what stage is active, and what must happen before it can move forward.
+
+The user should see a simple visual flow such as:
+
+Released
+-> Material Ready
+-> Queued
+-> In Progress
+-> Paused / Blocked
+-> Machining Complete
+-> Inspection
+-> Ready to Ship
+-> Shipped
+
+This flow can be represented as a lightweight flow chart or progress bar on the job page.
+
+It gives the user visual clarity even if it is not a deep scheduling optimizer.
+
+The flow should allow stage transitions:
+
+- Mark stage complete
+- Move to next stage
+- Move back if something was wrong
+- Open an issue if the stage is blocked
+- Ask assigned person for an update through chat
+
+The stage flow should reduce confusion, not create paperwork.
+If a stage requires too much manual detail, the UI should default to a simple status and let the user add detail only when useful.
+
+Useful planning fields:
+
+- Confirmed due date
+- Priority
+- Assigned machine, optional
+- Assigned owner/operator, optional
+- Required material
+- Required outside processing, optional
+- Required inspection
+- Required shipping docs
+- Current status
+- Blocker status
+
+The product should answer:
+
+- What jobs are due soon?
+- What jobs are at risk?
+- What jobs are blocked?
+- What jobs are waiting on material?
+- What jobs are waiting on inspection?
+- What jobs are ready to ship?
+
+
+17. ISSUES AND BOTTLENECKS
+
+Bottlenecks should be treated like issues.
+
+"Issue" may be the better product word because it is broader and more natural.
+
+An issue can exist against a job, against a machine, or sitewide.
+
+Bottlenecks are a type of issue.
+
+This does not need to be a separate user-facing agent.
+
+The system should support issue records:
+
+- Machine down
+- Waiting on material
+- Waiting on customer clarification
+- Waiting on tooling
+- Waiting on programming
+- Waiting on inspection
+- Waiting on outside vendor
+- Rework needed
+- Staff unavailable
+- Other
+
+Each issue can have:
+
+- Affected job, optional
+- Affected machine, optional
+- Severity
+- Owner
+- Opened date/time
+- Notes/photos
+- Status: open/resolved
+- Source: manually created, chat-created, or Corvus-detected
+- Related files/photos, optional
+
+The background status watcher can say:
+
+"3 jobs are blocked. 2 are waiting on material. Machine HAAS VF-2 is marked down and affects Job 1048."
+
+Operators should be able to tell Corvus through chat that there is a problem.
+
+Example:
+
+Operator:
+Job 1048 is stuck. VF-2 keeps alarming out.
+
+Corvus:
+Got it. Is this blocking production right now?
+
+Operator:
+Yes.
+
+Corvus:
+I created an issue for Job 1048 and Machine VF-2: "Machine alarm blocking production." I marked Job 1048 as Blocked and assigned the issue to the shop manager.
+
+Corvus should ask for the minimum useful information:
+
+- What job or machine is affected?
+- Is production blocked?
+- What is the problem?
+- Who should own it?
+- Any photo or note?
+
+Issues should behave much like issue tracking in an MES, but without forcing MES-level overhead.
+
+
+18. MATERIAL PREP AND BUILD READINESS
+
+Inventory management is hard in a machine shop.
+
+Raw material is consumed in chunks, drops, remnants, partial bars, sheets, and cutoffs.
+Without an MES or disciplined inventory process, exact inventory can become untrustworthy.
+
+For v1, material should be readiness-based, not quantity-ledger-based.
+
+Instead of:
+
+"You have exactly 41.3 inches of 6061 bar stock."
+
+Start with:
+
+"Material ready? Yes / No / Unknown."
+
+The readiness checklist:
+
+- Material required
+- Material source
+- Material status: unknown, needs order, ordered, received, available
+- Enough for job: yes/no/unknown
+- Certs required: yes/no
+- Certs attached: yes/no
+- Photo attached, optional
+
+This keeps the human in control and avoids fake precision.
+
+Later, an Inventory Agent can be added for shops that want tighter tracking.
+
+But early Corvus Lite should not depend on exact inventory.
+
+
+19. BUILD STATUS
+
+No setup agent is needed.
+
+The machinist knows what to do.
+
+The system should track job movement:
+
+- Queued
+- Running
+- Paused
+- Blocked
+- Machining complete
+- Sent to inspection
+
+"In setup" can exist as an optional status if a shop wants it, but it should not be required.
+
+Corvus should not ask for setup details by default.
+
+Updates should be quick:
+
+- Shop manager moves a card
+- Operator scans QR on traveler
+- Operator taps status
+- Operator adds note/photo
+- Operator enters quantity completed/scrapped, optional
+- Operator replies through Slack or chat
+
+V1 production fields:
+
+- Current operation, optional
+- Machine, optional
+- Operator, optional
+- Quantity complete
+- Quantity remaining
+- Quantity scrap, optional
+- Status
+- Blocker reason
+- Notes/photos
+
+The background status watcher should monitor:
+
+- Jobs due soon
+- Jobs stuck too long in one status
+- Jobs blocked
+- Jobs missing material confirmation
+- Jobs completed but not inspected
+- Jobs ready to ship
+- Staff who have not responded to update requests
+
+
+20. QUALITY
+
+Quality should remain lightweight but separate enough to protect trust.
+
+The quality workflow activates when:
+
+- Job is marked machining complete
+- User says inspection is required
+- FAI is required
+- CoC is required
+- Customer requirement mentions inspection or certs
+- Drawing has quality notes
+
+V1 quality workflow:
+
+Machining complete
+-> Corvus asks whether inspection is required
+-> User selects: None, Final Inspection, FAI, CoC, Custom
+-> Inspector reviews
+-> Pass / Fail / Rework
+-> Attach photos/docs
+-> Inspector signoff
+
+Inspection record can include:
+
+- Inspector name
+- Date/time
+- Result: pass/fail/rework
+- Notes
+- Photos
+- Measurements, optional
+- FAI required: yes/no
+- CoC required: yes/no
+- Uploaded docs
+
+No in-process inspection is needed in v1 unless the user adds it.
+
+Corvus can help by saying:
+
+"This drawing mentions final inspection and material cert. Do you want to require these before shipping?"
+
+
+21. OUTSIDE PROCESSING
+
+Outside processing is common but does not need its own v1 agent.
+
+It should exist as a placeholder or branch in the job flow.
+
+Common outside processes:
+
+- Anodizing
+- Heat treating
+- Plating
+- Painting
+- Coating
+- Grinding
+- Welding
+- Testing
+
+Fields:
+
+- Outside process needed: yes/no
+- Process type
+- Vendor
+- Sent date
+- Expected return date
+- Returned date
+- Docs attached
+
+This can live inside the job record/build flow for now.
+
+
+22. SHIPPING
+
+The shipping workflow answers:
+
+"Is this job actually ready to leave the building?"
+
+Inputs:
+
+- Job complete
+- Inspection signoff
+- Customer address
+- PO shipping instructions
+- Required docs
+- Packing photos, optional
+- CoC / FAI / certs if needed
+- Carrier/tracking, optional
+
+Shipping checklist:
+
+- Quantity complete
+- Inspection passed or waived
+- Required docs attached
+- Delivery address confirmed
+- Customer PO attached
+- Packing slip generated/uploaded
+- Shipping photo attached
+- Tracking number, optional
+
+The "take a picture" idea is strong.
+
+Photos create accountability:
+
+- Packed parts
+- Label
+- Box/crate
+- Shipping docs
+- Final part condition
+
+Corvus can draft:
+
+- Packing note
+- Customer shipment email
+- Internal shipping summary
+
+Example:
+
+Ready to ship:
+- Qty: 100/100 complete
+- Inspection: passed
+- CoC: attached
+- Delivery address: confirmed
+- Packing photo: attached
+
+Suggested action: Draft customer shipment email.
+
+
+23. CLOSEOUT AND MEMORY
+
+No closeout agent is needed for v1.
+
+But Corvus should quietly store closeout-style data:
+
+- Actual ship date
+- Whether job was late
+- Blockers encountered
+- Scrap or rework occurred
+- Inspection failed
+- Customer complaints
+- Notes/photos
+- Final docs
+
+This becomes memory for future quotes, customer context, and risk detection.
+
+The repeat relationship layer is not a separate workflow yet.
+It is the database/memory getting richer over time.
+
+Future Corvus can answer:
+
+- What did we make for this customer before?
+- What drawing revision did we use?
+- What price did we quote?
+- What issues happened?
+- What setup notes helped?
+- Did we ship late?
+- Did we make money?
+- Were there quality problems?
+
+
+24. CHAT AS A REAL INTERFACE
+
+For a small shop, the best UI may not always be the dashboard.
+
+The dashboard is the control panel.
+Slack, Teams, SMS, or email is the nervous system.
+
+There should not be separate chats for different agents.
+
+The user should experience one Corvus chat.
+
+Behind the scenes, any internal agent should be able to request information through that shared communication layer, provide information through that layer, or ask a staff member a question.
+
+The user should not need to know whether a question came from intake, quote prep, build status, quality, shipping, or another internal worker.
+
+Normal user experience:
+
+"Corvus asked John for an update on Job 1048."
+
+Advanced/beta trace:
+
+"Build Status Agent requested an update through the shared chat layer."
+
+Corvus should be able to message staff:
+
+Example:
+
+Corvus:
+John, quick check on Job 1048. Is it still running on VF-2?
+
+John:
+Yes. 72 done, should finish by 3.
+
+Corvus:
+Got it. I updated Job 1048 to 72/100 complete and estimated machining completion today at 3 PM.
+
+Another example:
+
+Corvus:
+Maria, Job 1048 was marked machining complete. Does this require final inspection before shipping?
+
+Maria:
+Yes, final only. No FAI.
+
+Corvus:
+Done. I added final inspection as required and moved the job to Waiting Inspection.
+
+The communication agent should ask tiny, answerable questions.
+
+Bad:
+
+"Please provide a full job update."
+
+Good:
+
+"Is Job 1048 still running, paused, or complete?"
+
+Bad:
+
+"Please update all production details."
+
+Good:
+
+"How many pieces are complete?"
+
+Staff can use natural language:
+
+"1048 is done, 98 good parts, 2 scrap from bad threads."
+
+Corvus turns that into:
+
+Job 1048:
+- Status: Machining Complete
+- Good qty: 98
+- Scrap qty: 2
+- Scrap reason: bad threads
+
+Possible command patterns:
+
+/job 1048 running
+/job 1048 complete 100
+/job 1048 blocked waiting on material
+/job 1048 scrap 2 bad threads
+/job 1048 photo
+
+But natural language should be supported whenever possible.
+
+The chat layer should also support issue creation.
+
+Example:
+
+"Job 1051 has a problem. Material is wrong."
+
+Corvus should ask a short follow-up if needed, create an issue, attach it to the job, and update the job status if production is blocked.
+
+
+25. JOB DETAIL PAGE
+
+When the user selects an in-progress job, the job page should answer:
+
+- What is this job?
+- Where is it?
+- Who owns it?
+- What files are attached?
+- What is blocking it?
+- What has happened so far?
+- What needs to happen next?
+
+Example header:
+
+Job 1048 - Acme Robotics - Bracket Rev C
+
+Status: In Progress
+Due: June 14
+Owner: John Doe
+Machine: Haas VF-2
+Quantity: 72 / 100 complete
+Current step: CNC milling
+Risk: Medium
+
+Possible tabs or sections:
+
+- Overview
+- Files
+- Activity
+- Checklist
+- Quality
+- Shipping
+- Chat
+
+The job page should include:
+
+- Current status
+- Stage-by-stage flow/progress visualization
+- Attached drawing/CAD/PO/quote
+- Extracted requirements
+- Assigned people
+- Quantity progress
+- Issues / bottlenecks
+- Quality requirements
+- Shipping readiness
+- Recent activity
+- Suggested next action
+
+The stage flow should be visually prominent.
+
+For each job, the user should see something like:
+
+RFQ Intake -> Drawing Review -> Capability Check -> Quote Draft -> Quote Approved -> PO Intake -> Job Released -> Build Readiness -> In Progress -> Quality Review -> Ready to Ship -> Shipped
+
+The current stage should be highlighted.
+Completed stages should be checked off.
+Future stages should be visible but quiet.
+Blocked stages should show an issue indicator.
+
+The user should be able to:
+
+- Move the job to the next stage
+- Mark a stage complete
+- Open or view issues attached to the current stage
+- Ask an assigned person for an update
+- See what information is missing before moving forward
+
+This visual flow gives the job a clear narrative from intake to shipment.
+It should feel like clarity, not bureaucracy.
+
+
+26. ACTIVITY TIMELINE
+
+Every job should have an activity timeline.
+
+This makes invisible automation legible without forcing users to think in agents.
+
+Example:
+
+9:12 AM - John marked job as Running
+10:04 AM - Photo uploaded from shop floor
+11:30 AM - Corvus asked John for quantity completed
+11:42 AM - John replied: 72 complete, 0 scrap
+12:05 PM - Status updated to In Progress
+
+Timeline events can include:
+
+- File uploaded
+- RFQ created
+- Drawing reviewed
+- Quote draft created
+- Human approved quote
+- PO received
+- PO mismatch flagged
+- Job released
+- Material marked ready
+- Job moved to running
+- Issue opened
+- Issue resolved
+- Quality signoff
+- Shipping photo uploaded
+- Customer update drafted
+- Job shipped
+
+
+27. COMMAND CENTER / DASHBOARD
+
+The dashboard should be practical and dense enough for real shop use.
+
+It should not be a landing page.
+It should not be a marketing hero.
+It should be the actual work surface.
+
+Possible top metrics:
+
+- Active Jobs
+- At Risk
+- Blocked
+- Waiting on Material
+- Waiting Inspection
+- Ready to Ship
+- Ships Today
+- Ships This Week
+
+Core sections:
+
+1. Shop Pulse
+
+Concise AI summary:
+
+"6 jobs need attention. 2 are blocked by material, 3 are waiting inspection, and Job 1044 has a PO due date mismatch."
+
+2. Needs Attention
+
+Specific action list:
+
+- Job 1048 is complete but needs inspection signoff.
+- Job 1052 is due Friday, material still unconfirmed.
+- John has not updated Job 1039 since yesterday at 2:14 PM.
+- PO for Job 1055 has a due date mismatch against the quote.
+- Job 1041 is ready to ship once CoC is attached.
+
+3. Jobs Board
+
+Columns:
+
+- Ready
+- Queued
+- In Progress
+- Blocked
+- Inspection
+- Ready to Ship
+
+4. Issues
+
+Sitewide open issues and blockers with severity and owner.
+
+5. Throughput / Simple Metrics
+
+A graph can show:
+
+- Completed jobs per week
+- On-time percentage
+- Jobs shipped
+- Jobs blocked
+- Average days in progress
+- Inspection queue
+
+6. Recent Activity
+
+What changed today.
+
+7. Quick Actions
+
+- Upload RFQ
+- Forward email
+- Upload PO
+- Scan traveler
+- Log issue
+- Ask for job update
+- Draft customer update
+
+
+28. VISUAL UI DIRECTION
+
+The UI mockup direction:
+
+Desktop SaaS application.
+Clean, professional, industrial, quiet, and utilitarian.
+
+Not a marketing page.
+Not full of giant hero sections.
+Not card-heavy decoration.
+Not a colorful toy.
+
+Visual characteristics:
+
+- White and cool gray background
+- Charcoal text
+- Teal for active/positive accents
+- Amber for risk
+- Red for blocked/late
+- Compact status tiles
+- Left sidebar navigation
+- Dense but organized layout
+- 8px radius cards/components
+- Clear status tags
+- File and drawing icons
+- Simple line/bar chart
+- Persistent right-side Shop Pulse panel
+- Lucide-style icons
+- No decorative blobs
+- No unnecessary illustrations
+
+Sidebar items:
+
+- Command Center
+- Jobs
+- Shop Floor
+- Quality
+- Customers
+- Files
+- Settings
+
+Maybe "Agents" appears only in advanced/beta mode.
+
+User-facing UI should emphasize:
+
+- Jobs
+- Status
+- Files
+- People
+- Next actions
+- Issues
+- Stage flow
+
+Not internal agent architecture.
+
+
+28A. JOB FLOW UI
+
+Every job should have a visual stage flow.
+
+This is one of the most important UI ideas for Corvus Lite.
+
+The flow should be accessible when a user clicks into any job.
+It should show the full path from intake to shipment, with the current stage clearly marked.
+
+The flow is not meant to be a detailed operation router.
+It is meant to show the business and execution state of the job.
+
+Recommended stages:
+
+RFQ Intake
+-> Drawing Review
+-> Capability Check
+-> Quote Draft
+-> Quote Approved
+-> PO Intake
+-> Job Released
+-> Build Readiness
+-> In Progress
+-> Quality Review
+-> Ready to Ship
+-> Shipped
+
+Optional branches:
+
+- Issue Opened
+- Waiting on Customer
+- Waiting on Material
+- Outside Processing
+- Rework
+
+Each stage can display:
+
+- Complete / current / future / blocked state
+- Missing information
+- Attached issue count
+- Related files
+- Assigned person
+- Last update
+- Next action
+
+The flow should allow lightweight actions:
+
+- Move forward
+- Mark complete
+- Open issue
+- Ask for update
+- Attach file/photo
+- View history
+
+This should not become operation-level paperwork.
+
+Corvus should not require the user to define:
+
+- Saw material
+- CNC mill setup
+- Tooling operation
+- Deburr operation
+- Detailed routing steps
+
+Those details belong to the machinist and can remain outside Corvus unless a future customer explicitly wants routing.
+
+
+28B. SETUP WIZARD UI
+
+The company onboarding setup wizard should collect capability data.
+
+The goal is to create a structured capability document without making onboarding feel like a consulting project.
+
+The wizard should ask for:
+
+- Company basics
+- Shop type
+- Machine list
+- Work envelope limits
+- Materials commonly supported
+- Materials avoided
+- Processes done in-house
+- Common outside processes
+- Inspection equipment
+- Certifications
+- Preferred work
+- Work to avoid
+- Normal tolerance comfort
+- Challenging tolerance thresholds
+- Standard quote/lead time preferences
+- Key staff and roles
+- Preferred communication channel
+
+AI can help structure messy answers.
+
+Example:
+
+User writes:
+"We mostly do aluminum and stainless, have two Haas mills, one lathe, no anodize in house, usually send that to ABC Coatings. We don't like titanium jobs."
+
+Corvus structures:
+
+- Materials supported: aluminum, stainless steel
+- Materials avoided: titanium
+- Machines: two Haas CNC mills, one CNC lathe
+- In-house processes: machining
+- Outside processes: anodizing through ABC Coatings
+
+The user should be able to review and edit the structured capability profile before it is used.
+
+This profile becomes the grounding document for capability checks.
+
+
+29. BACKGROUND AGENT ARCHITECTURE
+
+Internally, Corvus may use multiple agents or background workers.
+
+The user does not need to know this.
+
+Possible internal agents:
+
+- Job Intake Agent
+- Drawing Review Agent
+- Capability Check Agent
+- Quote Prep Agent
+- PO Intake Agent
+- Build Status Agent
+- Quality Agent
+- Shipping Agent
+- Communication Agent
+- Future Material Cost Agent
+- Future Inventory Agent
+- Future Outside Processing Agent
+- Future Closeout/Learning Agent
+
+But user-facing names should be avoided in the normal UI.
+
+In normal mode:
+
+"Corvus updated Job 1048 from John's Slack reply."
+
+In beta/trace mode:
+
+"Build Status Agent interpreted John's reply.
+Confidence: 94%
+Parsed update:
+- Job: 1048
+- Status: Machining Complete
+- Good Qty: 98
+- Scrap Qty: 2
+- Scrap Reason: bad threads"
+
+The agent architecture is good for execution, like multiple simple workers handling separate tasks and combining information.
+
+The product experience should remain unified.
+
+
+30. MVP SCOPE
+
+The first useful version should probably include:
+
+- Customer/RFQ intake
+- Drawing and document upload
+- Email forwarding or manual upload
+- Structured RFQ package
+- Drawing requirement extraction
+- Capability/risk checklist
+- Quote draft preparation
+- Human quote approval
+- PO intake
+- PO vs quote comparison
+- Job creation
+- Basic traveler draft
+- Job board
+- Job detail page
+- Build readiness checklist
+- Material readiness as yes/no/unknown
+- Issue logging against jobs or machines
+- Job status updates
+- Slack/chat status requests and replies
+- Lightweight quality signoff
+- Shipping readiness checklist
+- Activity timeline
+- Shop Pulse dashboard
+- Search across jobs/customers/files
+
+MVP should avoid:
+
+- AI-generated cycle time
+- AI-generated exact tooling recommendation
+- Full production scheduling optimizer
+- Full inventory ledger
+- Required operation-level routing
+- Full MES behavior
+- Full QMS behavior
+- Automatic quote sending
+- Automatic customer commitments
+- Deep CAD geometry analysis as a requirement
+- Outside processing complexity
+- Closeout agent
+
+
+31. FUTURE EXPANSION
+
+Future modules can include:
+
+Material Cost Agent:
+
+- Supplier price lookup
+- Material quote parsing
+- Suggested order quantities
+- Cert tracking
+
+Inventory Agent:
+
+- Stock tracking
+- Remnant tracking
+- Material consumption
+- Barcode/QR material logging
+
+Outside Processing Agent:
+
+- Vendor tracking
+- Send/return status
+- Vendor lead time memory
+- Outside processing docs
+
+Scheduling Agent:
+
+- Capacity planning
+- Machine load
+- Due date risk prediction
+- Issue and bottleneck forecasting
+
+Closeout/Learning Agent:
+
+- Quote vs actual comparison
+- Late reason memory
+- Scrap/rework memory
+- Future quote suggestions based on history
+
+Customer Memory:
+
+- Repeat job history
+- Previous drawings/revisions
+- Prior quality issues
+- Pricing history
+- Communication history
+
+
+32. THE REAL LONG-TERM PLAY
+
+Corvus Lite can become the grassroots entry point into manufacturing software.
+
+It earns trust with small shops by solving daily chaos.
+
+Over time, it can become:
+
+- Lightweight MES-like visibility
+- Lightweight QMS-like documentation
+- Lightweight ERP-like job/customer memory
+- Lightweight scheduling
+- Lightweight inventory
+- Lightweight customer communication
+- AI operations analyst
+
+But it should not start by claiming all of that.
+
+The first wedge is job visibility and operational follow-through.
+
+Corvus MFG can remain the larger enterprise manufacturing intelligence platform.
+
+Corvus Lite becomes:
+
+"Shop-floor clarity for the rest of American manufacturing."
+
+Or:
+
+"A business memory and execution layer for builders who cannot afford operational drag."
+
+
+33. THE COMPANY WE DEFINED TODAY
+
+We spent the afternoon defining the company, not writing code.
+
+The company is not just an AI wrapper.
+It is not just a dashboard.
+It is not a cheaper MES.
+
+It is a new operational layer for small manufacturers.
+
+The philosophy:
+
+- Respect the machinist.
+- Respect the shop manager.
+- Respect messy reality.
+- Do not force perfect data entry.
+- Do not ask small businesses to behave like enterprise customers.
+- Meet the shop where it already works: email, drawings, paper, chat, photos, and quick human judgment.
+- Use AI to remove administrative drag, not to fake expertise.
+- Make status visible.
+- Make blockers obvious.
+- Make handoffs clean.
+- Make records searchable.
+- Make staff updates easy.
+- Make the owner feel less alone inside the chaos.
+
+The best version of Corvus Lite is a calm, competent operations coordinator for small machine shops.
+
+It watches the jobs.
+It reads the documents.
+It asks the staff simple questions.
+It remembers what happened.
+It tells the owner what needs attention.
+It helps the shop move work from RFQ to shipped without losing the thread.
+
+That is the company we started building today.

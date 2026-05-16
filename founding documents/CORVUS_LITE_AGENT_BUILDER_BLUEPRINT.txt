@@ -1,0 +1,671 @@
+CORVUS LITE AGENT BUILDER BLUEPRINT
+Stable reference format: AB-###
+
+AB-001 Purpose: This blueprint defines how Corvus Lite agents should be designed, implemented, orchestrated, guarded, tested, and evolved.
+
+AB-002 This document should be read together with CORVUS_LITE_PRODUCT_PLAN.txt and CORVUS_LITE_BUILD_INSTRUCTIONS.md before implementing agentic behavior.
+
+AB-003 Source inspiration: this blueprint incorporates lessons from "A practical guide to building agents" and the pguso/ai-agents-from-scratch repository, translated into Corvus Lite's machine-shop operating context.
+
+AB-004 Corvus Lite should not expose "many agents" as the normal user experience.
+
+AB-005 The user-facing experience is one coherent Corvus system: jobs, issues, files, people, stages, status, and next actions.
+
+AB-006 Internal agents are implementation workers, not user-facing personalities.
+
+AB-007 The normal user should see "Corvus updated Job 1048 from John's reply," not "Build Status Agent invoked updateJobStatus."
+
+AB-008 Advanced/beta trace mode may expose agent names, tool calls, confidence, parsed fields, and validation results for debugging.
+
+
+1. CORE AGENT DEFINITION
+
+AB-009 In Corvus Lite, an agent is a workflow worker that uses an LLM, instructions, tools, memory/context, and guardrails to complete a bounded task.
+
+AB-010 Generic agent formula: Agent = Model + Instructions + Tools + Context + Output Schema + Guardrails + Run Loop.
+
+AB-011 No Corvus agent should be defined only by a prompt.
+
+AB-012 Every agent must have a bounded job, a known input shape, a known output shape, and a clear stopping condition.
+
+AB-013 Every agent must declare what it is allowed to decide and what must be escalated to a human.
+
+AB-014 Corvus agents should make human judgment easier to apply; they should not pretend to be machinists, inspectors, estimators, or shop owners.
+
+AB-015 The first implementation should favor deterministic application logic plus targeted LLM calls over open-ended autonomous loops.
+
+AB-016 Build agentic behavior only where ambiguity, unstructured documents, tool selection, or multi-step workflow coordination creates real value.
+
+
+2. WHEN TO USE AN AGENT
+
+AB-017 Use an agent when a workflow requires interpretation of unstructured data, nuanced decision support, contextual comparison, or conversational information gathering.
+
+AB-018 Good Corvus agent use cases: RFQ extraction, drawing-note extraction, capability-check explanation, PO-vs-quote comparison, shop-pulse summarization, Slack message interpretation, issue creation from chat.
+
+AB-019 Weak Corvus agent use cases: deterministic status updates, simple form validation, basic CRUD, fixed dashboard metrics, role checks, file upload, known required fields.
+
+AB-020 Do not use an LLM where a small deterministic function is more reliable, cheaper, and easier to test.
+
+AB-021 A workflow can begin as deterministic software and later gain an agent if real-world edge cases prove the need.
+
+AB-022 Agent introduction should be incremental. Do not start Corvus Lite with a complex autonomous multi-agent graph.
+
+
+3. CORVUS MULTI-AGENT STANCE
+
+AB-023 Corvus Lite should use a manager/orchestrator pattern as the default multi-agent architecture.
+
+AB-024 The orchestrator owns workflow control, context assembly, routing, validation, human confirmation, and final writes.
+
+AB-025 Specialized agents/workers perform bounded tasks and return structured outputs to the orchestrator.
+
+AB-026 Specialized workers do not independently control the user experience.
+
+AB-027 Specialized workers do not independently write high-risk changes to the database.
+
+AB-028 The orchestrator is the only component allowed to synthesize multiple worker outputs into a final workflow decision.
+
+AB-029 Decentralized handoffs between peer agents should be avoided in the first version because Corvus needs one unified, predictable shop experience.
+
+AB-030 Decentralized handoffs may be considered later for long conversations where a specialized assistant fully takes over a low-risk domain, but this is not v1.
+
+AB-031 Internal workers may be "equal in rank" as implementation units, but they are not equal in control; the orchestrator is the workflow authority.
+
+AB-032 This architecture supports building agent by agent while keeping the product coherent.
+
+
+4. ORCHESTRATOR AGENT STRUCTURE
+
+AB-033 The orchestrator is not just another domain worker.
+
+AB-034 The orchestrator's job is to run the show: decide what needs to happen, which worker or tool should run, what context is needed, what outputs are valid, and what requires human approval.
+
+AB-035 Orchestrator inputs may include: user action, chat message, job ID, RFQ ID, file ID, current workflow stage, company ID, and requested operation.
+
+AB-036 Orchestrator context may include: company capability profile, job record, RFQ record, quote record, PO record, linked files, activity history, open issues, user role, and prior agent outputs.
+
+AB-037 Orchestrator outputs should be structured workflow results, not freeform prose.
+
+AB-038 Suggested orchestrator output schema fields: runId, companyId, targetType, targetId, intent, selectedWorkers, toolPlan, requiredConfirmations, proposedChanges, userMessage, auditSummary, status.
+
+AB-039 Orchestrator stop conditions: final structured result, human confirmation required, validation failure, guardrail trip, max steps reached, or unrecoverable tool failure.
+
+AB-040 The orchestrator should prefer the smallest sufficient worker/tool set.
+
+AB-041 The orchestrator should never invent records. It must read source records through tools or receive them as verified context.
+
+AB-042 The orchestrator should never silently override human-entered values.
+
+AB-043 If an LLM-extracted value conflicts with a human-entered value, the orchestrator must preserve the human value and surface the conflict.
+
+AB-044 The orchestrator should maintain a run trace for every agentic workflow.
+
+AB-045 The orchestrator should classify tool calls by risk before execution.
+
+AB-046 Low-risk read tools may run automatically.
+
+AB-047 Medium-risk write tools may run automatically only when reversible and within the user's explicit requested workflow.
+
+AB-048 High-risk writes require human confirmation.
+
+AB-049 Examples of high-risk actions: approving a quote, sending a quote, committing a delivery date, marking quality passed, marking a job shipped, deleting files, changing customer-facing terms.
+
+AB-050 The orchestrator should be code-first, not graph-first: explicit TypeScript workflow code should define the main routes, with LLM help for interpretation and planning inside safe boundaries.
+
+
+5. GENERIC DOMAIN AGENT STRUCTURE
+
+AB-051 Each generic domain agent should be implemented from a shared agent template.
+
+AB-052 Required agent files: system prompt, config, input schema, output schema, allowed tools, evaluator cases, and implementation wrapper.
+
+AB-053 Suggested folder pattern:
+agents/{agentName}/system.md
+agents/{agentName}/config.ts
+agents/{agentName}/schemas.ts
+agents/{agentName}/tools.ts
+agents/{agentName}/runner.ts
+agents/{agentName}/evals.ts
+
+AB-054 Suggested shared folder pattern:
+agents/shared/agent-runner.ts
+agents/shared/tool-registry.ts
+agents/shared/context-builder.ts
+agents/shared/llm-client.ts
+agents/shared/validation.ts
+agents/shared/errors.ts
+agents/shared/guardrails.ts
+agents/shared/audit-log.ts
+
+AB-055 Generic agent config should include: name, purpose, model, temperature, maxTokens, allowedTools, outputSchema, riskLevel, requiresHumanApprovalFor, timeoutMs, maxRetries, maxSteps.
+
+AB-056 Generic agent system prompt should include: role, boundaries, allowed decisions, prohibited decisions, required output format, escalation rules, and examples.
+
+AB-057 Generic agent input should be explicit and minimal.
+
+AB-058 Generic agent output should always be machine-validated before any database write.
+
+AB-059 Generic agents should return recommendations, extracted data, draft text, risk flags, missing information, and proposed actions.
+
+AB-060 Generic agents should not directly own the complete workflow.
+
+AB-061 Generic agents should not decide final customer commitments.
+
+AB-062 Generic agents should not talk to the user independently unless routed through the orchestrator or shared communication layer.
+
+
+6. PROPOSED CORVUS AGENTS / WORKERS
+
+AB-063 Intake Extraction Worker: extracts RFQ fields from manually entered text, pasted email content, drawing text, and uploaded document text.
+
+AB-064 Drawing Review Worker: extracts manufacturing-relevant drawing notes, tolerances, material, finish, certs, and quality requirements from document text or future vision/CAD signals.
+
+AB-065 Capability Check Worker: compares extracted requirements against the stored company capability profile and explains likely compatibility, risks, and missing confirmations.
+
+AB-066 Quote Prep Worker: drafts customer-facing quote language, assumptions, exclusions, and missing human inputs without deciding price or sending the quote.
+
+AB-067 PO Compare Worker: compares PO details against the accepted quote/RFQ and flags quantity, price, due date, revision, material, shipping, or quality requirement mismatches.
+
+AB-068 Job Flow Worker: proposes stage movement or missing-stage requirements, but the app/orchestrator executes stage changes.
+
+AB-069 Issue Worker: interprets issue reports, classifies issue type, identifies affected job/machine/site, and proposes an issue record.
+
+AB-070 Build Status Worker: interprets staff updates about job status, quantity complete, scrap, blocked state, and notes.
+
+AB-071 Quality Worker: identifies whether final inspection, FAI, CoC, or custom signoff appears required; it does not pass inspection.
+
+AB-072 Shipping Worker: checks shipping readiness, required docs, delivery address presence, packing photo presence, and tracking status; it does not mark shipped without confirmation.
+
+AB-073 Shop Pulse Worker: summarizes current jobs, issues, late risks, waiting material, waiting inspection, and ready-to-ship work from verified database records.
+
+AB-074 Communication Worker: converts Slack/chat/email-like messages into structured intents and short follow-up questions.
+
+AB-075 Future Memory/RAG Worker: retrieves similar past jobs, customer history, quality patterns, and quote context when enough data exists.
+
+
+7. AGENT PROMPT DESIGN RULES
+
+AB-076 Use existing product documents as the source for agent instructions.
+
+AB-077 Do not make agent prompts broad or aspirational. Make them procedural.
+
+AB-078 Break dense policies into numbered steps inside the prompt.
+
+AB-079 Every prompt should specify what action or output is expected at each step.
+
+AB-080 Prompts should include edge cases and missing-information behavior.
+
+AB-081 Prompts should explicitly say when to ask a human instead of guessing.
+
+AB-082 Prompts should include examples of correct and incorrect behavior.
+
+AB-083 Prompts should forbid hidden database writes.
+
+AB-084 Prompts should forbid final business decisions outside the agent's scope.
+
+AB-085 Prompts should require concise, structured output.
+
+AB-086 Use prompt templates with policy variables when multiple agents share the same pattern.
+
+AB-087 Example prompt variables: companyName, shopCapabilities, workflowStage, userRole, targetRecord, allowedTools, forbiddenActions, requiredOutputSchema.
+
+AB-088 Keep prompts small enough to debug. Move stable policies into shared templates and pass only relevant context.
+
+
+8. TOOLS
+
+AB-089 Tools are the agent's hands. Tools should be standardized, typed, documented, tested, and reusable.
+
+AB-090 Tool definitions should support many-to-many use: one tool may be used by multiple agents if appropriate.
+
+AB-091 Tools should be grouped into data tools, action tools, and orchestration tools.
+
+AB-092 Data tools retrieve context and should be read-only.
+
+AB-093 Action tools change state or send messages.
+
+AB-094 Orchestration tools call workers or start sub-runs.
+
+AB-095 Tool names should be specific and unambiguous.
+
+AB-096 Prefer createIssue over manageIssue.
+
+AB-097 Prefer getJobById over queryEverything.
+
+AB-098 Prefer proposeJobStageChange over updateJobStage when an LLM is involved.
+
+AB-099 LLM-facing tools should have narrow parameter schemas.
+
+AB-100 Tools should return structured results, not only prose.
+
+AB-101 Every write tool should create or support an activity event.
+
+AB-102 Every write tool should include actor, source, reason, and correlationId.
+
+AB-103 Every tool should define risk level: read, low-write, medium-write, or high-write.
+
+AB-104 Every high-write tool must require human confirmation.
+
+AB-105 Suggested data tools: getCompanyProfile, getCapabilityProfile, getRfq, getJob, getQuote, getPurchaseOrder, listLinkedFiles, listOpenIssues, listActivityEvents.
+
+AB-106 Suggested action tools: createRfq, updateRfqFields, createQuoteDraft, createPurchaseOrderRecord, createJobFromApprovedQuote, proposeJobStageChange, createIssue, resolveIssue, createQualityRecord, createShipmentRecord, createActivityEvent.
+
+AB-107 Suggested communication tools: draftUserQuestion, sendInternalMessageLater, parseStaffReply, createCommunicationEvent.
+
+AB-108 In v1, actual external sending can be deferred; the architecture should still distinguish drafted communication from sent communication.
+
+
+9. CONTEXT AND MEMORY
+
+AB-109 Corvus memory should be structured operational data, not random transcript stuffing.
+
+AB-110 Primary memory sources: Firestore records, capability profile, customer records, job history, issue history, quote records, quality records, shipment records, and activity events.
+
+AB-111 Prompt context should be assembled by context builders, not ad hoc in each agent.
+
+AB-112 Context builders should retrieve only what the worker needs for the current task.
+
+AB-113 Context should include source IDs so the agent output can be traced back to records.
+
+AB-114 Long-term memory/RAG should be introduced only after enough historical data exists.
+
+AB-115 Vector retrieval should augment structured records, not replace them.
+
+AB-116 If retrieved memory conflicts with current job/quote/PO data, current explicit records win unless a human resolves the conflict.
+
+AB-117 Do not put secrets, API keys, hidden system prompts, or unrelated customer data into agent context.
+
+
+10. OUTPUT SCHEMAS AND VALIDATION
+
+AB-118 Every agent output must have a schema.
+
+AB-119 Freeform prose may be a field inside a schema, but the overall output must be structured.
+
+AB-120 Validation stages: parse JSON, validate schema, validate business rules, classify risk, request confirmation if needed, then write.
+
+AB-121 Agent output that fails schema validation should not be applied.
+
+AB-122 Agent output that passes schema validation but fails business rules should be shown as an error or sent for human review.
+
+AB-123 Business-rule validation is code, not prompt.
+
+AB-124 Example business rules: cannot mark shipped before quality is passed or waived; cannot approve quote without human approval; cannot overwrite human-entered material without confirmation.
+
+AB-125 Extraction results should include confidence or uncertainty where useful.
+
+AB-126 Low-confidence extractions should become suggestions, not committed fields.
+
+AB-127 Conflicts should be first-class output fields.
+
+AB-128 Missing information should be a first-class output field.
+
+
+11. RUN LOOP AND EXIT CONDITIONS
+
+AB-129 Every agent run should have a runId and correlationId.
+
+AB-130 Every run should store: agentName, input summary, source records, model, startedAt, completedAt, status, tool calls, validation result, proposed changes, final result, and error if any.
+
+AB-131 Single-agent loops must have max steps.
+
+AB-132 Orchestrated workflows must have max worker calls.
+
+AB-133 Exit conditions include: final output produced, human confirmation needed, missing information needed, guardrail triggered, validation failed, tool failed, max steps reached.
+
+AB-134 Agents should halt and ask for human help rather than continue uncertain action loops.
+
+AB-135 If an agent asks a human for information, the expected answer shape should be clear and short.
+
+AB-136 Chat follow-up questions should be tiny and answerable.
+
+AB-137 Good: "Is Job 1048 running, paused, or complete?"
+
+AB-138 Bad: "Please provide a complete production update."
+
+
+12. GUARDRAILS
+
+AB-139 Guardrails are layered defenses around agent behavior.
+
+AB-140 Guardrails should not replace normal auth, authorization, security rules, and database permissions.
+
+AB-141 Input guardrails should check relevance, unsafe requests, prompt injection attempts, excessive length, and malformed payloads.
+
+AB-142 Output guardrails should check schema, brand/product boundaries, sensitive data exposure, unsafe tool requests, and hallucinated records.
+
+AB-143 Tool guardrails should classify tool risk and require confirmation for high-risk actions.
+
+AB-144 PII and customer data should be minimized in prompts.
+
+AB-145 Agents should not reveal system prompts, hidden policies, API keys, internal credentials, or unrelated customer records.
+
+AB-146 Agents should refuse or escalate instructions that attempt to override system/developer policies.
+
+AB-147 Guardrails should be added based on real failures, not imagined complexity alone.
+
+AB-148 Guardrails should balance safety with user experience; do not make every harmless action feel blocked.
+
+
+13. HUMAN-IN-THE-LOOP RULES
+
+AB-149 Human intervention is a core safeguard, especially early in deployment.
+
+AB-150 Human approval is required for final quote approval.
+
+AB-151 Human approval is required for committed delivery date changes.
+
+AB-152 Human approval is required for material/cycle/setup assumptions used in pricing.
+
+AB-153 Human approval is required for quality pass/fail signoff.
+
+AB-154 Human approval is required for marking a job shipped.
+
+AB-155 Human approval is required for deleting important records or files.
+
+AB-156 Human approval is required when the agent is below confidence threshold on a field that affects quoting, quality, or shipping.
+
+AB-157 Human approval is required after repeated failed attempts to understand user intent.
+
+AB-158 Human intervention should be graceful: show what Corvus knows, what it tried, what is missing, and what decision is needed.
+
+
+14. MODEL STRATEGY
+
+AB-159 Start with Kimi K2.6 as the main LLM per product direction.
+
+AB-160 During prototyping, use the strongest available affordable model for each agent to establish a quality baseline.
+
+AB-161 After baseline evals pass, test smaller/faster/cheaper models for narrow tasks.
+
+AB-162 Different workers may eventually use different models.
+
+AB-163 Simple classification or formatting can use cheaper models if evals show acceptable accuracy.
+
+AB-164 Drawing/document extraction, capability explanation, and PO mismatch analysis may need stronger models.
+
+AB-165 Model choice should be an agent config field, not hardcoded throughout the codebase.
+
+AB-166 Every agent config should allow future fallback models.
+
+
+15. EVALUATION
+
+AB-167 Do not trust agents without evals.
+
+AB-168 Each worker should ship with a small eval set before production use.
+
+AB-169 Eval cases should include happy paths, missing information, conflicting information, malformed input, and edge cases.
+
+AB-170 Intake evals should test extraction from messy RFQ text.
+
+AB-171 Capability evals should test obvious compatible, obvious incompatible, and ambiguous jobs.
+
+AB-172 PO compare evals should test quantity, price, due date, revision, material, and quality requirement mismatches.
+
+AB-173 Issue-worker evals should test chat messages that mention a job, a machine, both, or neither.
+
+AB-174 Quality evals should test FAI, CoC, final inspection, no inspection, and unclear requirements.
+
+AB-175 Shop Pulse evals should verify that summaries only mention real database records.
+
+AB-176 Track precision/recall for extraction and mismatch detection where possible.
+
+AB-177 Track human override rates to find weak agents.
+
+AB-178 Store failed examples and use them to improve prompts, schemas, tools, or guardrails.
+
+
+16. ERROR HANDLING AND OBSERVABILITY
+
+AB-179 Agent errors should use stable machine-readable error codes.
+
+AB-180 Suggested error classes: ValidationError, LLMCallError, ToolExecutionError, GuardrailError, HumanConfirmationRequired, AgentWorkflowError.
+
+AB-181 Every user-visible agent failure should include a user-safe message and a reference/correlation ID.
+
+AB-182 Logs should include developer details, but the UI should avoid exposing raw stack traces.
+
+AB-183 Use timeouts around LLM calls and tools.
+
+AB-184 Retry only retryable failures.
+
+AB-185 Use exponential backoff or jitter for transient failures.
+
+AB-186 Provide deterministic fallback behavior where possible.
+
+AB-187 Example fallback: if Shop Pulse LLM summary fails, show deterministic counts and recent issues.
+
+AB-188 Example fallback: if RFQ extraction fails, preserve uploaded files and let the user enter fields manually.
+
+AB-189 Failed agent runs should not corrupt records.
+
+AB-190 Agent run logs should be searchable by company, job, agent, status, and correlationId.
+
+
+17. AGENT TRACE / BETA MODE
+
+AB-191 Normal users should see plain operational updates.
+
+AB-192 Advanced/beta mode can show internal agent traces.
+
+AB-193 Trace fields: worker name, prompt version, model, input records, tool calls, output schema, validation result, confidence, proposed changes, applied changes, errors.
+
+AB-194 Trace view should help developers and early design partners debug incorrect behavior.
+
+AB-195 Trace view should never reveal hidden secrets or unrelated customer data.
+
+
+18. DATABASE WRITE POLICY
+
+AB-196 LLM text does not write to Firestore directly.
+
+AB-197 Validated tool calls write to Firestore.
+
+AB-198 Every write should include actorType: user, system, integration, or agent.
+
+AB-199 Every agent-originated write should include runId and correlationId.
+
+AB-200 Every meaningful write should create an activity event.
+
+AB-201 Reversible writes can be easier to automate than irreversible writes.
+
+AB-202 Irreversible or customer-facing writes require explicit human confirmation.
+
+
+19. COMMUNICATION LAYER
+
+AB-203 There is one Corvus communication layer.
+
+AB-204 There should not be separate chats for separate agents.
+
+AB-205 Any internal worker may request a question through the shared communication layer.
+
+AB-206 The orchestrator decides whether, when, and how that question is sent.
+
+AB-207 Staff-facing questions should be short, specific, and operational.
+
+AB-208 Chat replies should be parsed into structured intents before changing records.
+
+AB-209 Ambiguous replies should trigger a follow-up or human review.
+
+AB-210 Chat-derived changes should be visible in the activity timeline.
+
+
+20. IMPLEMENTATION SEQUENCE FOR AGENTS
+
+AB-211 Build deterministic product workflows first.
+
+AB-212 Add the shared agent runner after core RFQ/job records exist.
+
+AB-213 First agentic capability should probably be RFQ/document extraction because it handles unstructured data and creates immediate value.
+
+AB-214 Second agentic capability should probably be capability-check explanation because it uses the structured onboarding profile.
+
+AB-215 Third agentic capability should probably be PO compare because mismatches are high-value and bounded.
+
+AB-216 Add Shop Pulse summarization after dashboard data exists.
+
+AB-217 Add chat interpretation after the mock communication layer exists.
+
+AB-218 Add Slack only after the internal communication schema works.
+
+AB-219 Do not build every specialized worker before the app has useful workflows.
+
+AB-220 Build one worker, evaluate it, integrate it, observe it, then build the next.
+
+
+21. CORVUS-SPECIFIC TRUST BOUNDARIES
+
+AB-221 Intake Worker can extract fields but cannot decide quote readiness alone.
+
+AB-222 Drawing Review Worker can flag notes but cannot certify manufacturability.
+
+AB-223 Capability Worker can say likely compatible/incompatible/needs review but cannot make the final shop decision.
+
+AB-224 Quote Prep Worker can draft quote language but cannot approve price or send the quote.
+
+AB-225 PO Compare Worker can flag mismatches but cannot accept changed PO terms without human review.
+
+AB-226 Build Status Worker can propose status updates from chat but should ask confirmation for ambiguous updates.
+
+AB-227 Issue Worker can create an issue from clear staff report, but assigning severity or blocking status should be reviewable.
+
+AB-228 Quality Worker can prepare inspection requirements but cannot sign off quality.
+
+AB-229 Shipping Worker can prepare readiness checks but cannot ship without confirmation.
+
+AB-230 Shop Pulse Worker can summarize records but cannot invent risk reasons that are not present in data.
+
+
+22. MINIMUM AGENT CONFIG TEMPLATE
+
+AB-231 Agent name: stable internal name, e.g. intakeExtractionWorker.
+
+AB-232 Agent purpose: one sentence describing the bounded job.
+
+AB-233 Agent stage: workflow stage where it can run.
+
+AB-234 Model: primary model and fallback model if configured.
+
+AB-235 Temperature: default low for extraction/checking, slightly higher only for drafting text.
+
+AB-236 Inputs: explicit schema and required source IDs.
+
+AB-237 Context builder: function responsible for retrieving allowed context.
+
+AB-238 Tools: explicit allowlist.
+
+AB-239 Output schema: required.
+
+AB-240 Risk level: read, low-write, medium-write, high-write.
+
+AB-241 Human confirmation policy: exact conditions that require approval.
+
+AB-242 Guardrails: input, output, tool, and business-rule checks.
+
+AB-243 Evals: path to eval cases.
+
+AB-244 Prompt version: stable version string.
+
+AB-245 Timeout/retry policy: explicit values.
+
+
+23. MINIMUM ORCHESTRATOR CONFIG TEMPLATE
+
+AB-246 Orchestrator name: corvusOrchestrator.
+
+AB-247 Purpose: route workflow events to deterministic logic, tools, or specialized workers while maintaining one coherent user experience.
+
+AB-248 Inputs: event type, user ID, company ID, target record, requested action, channel.
+
+AB-249 Context builder: retrieves company, user role, target record, workflow stage, related files, related issues, and recent activity.
+
+AB-250 Worker registry: list of callable workers with descriptions, input schemas, output schemas, and risk levels.
+
+AB-251 Tool registry: list of callable tools with descriptions, parameter schemas, and risk levels.
+
+AB-252 Routing policy: deterministic route first where possible; LLM route only when intent or next step is ambiguous.
+
+AB-253 Confirmation policy: high-risk actions require explicit approval.
+
+AB-254 Merge policy: combine multiple worker outputs by source confidence, recency, human-entered priority, and business rules.
+
+AB-255 Conflict policy: preserve human-entered values and surface conflicts.
+
+AB-256 Output policy: produce proposed changes, user-visible summary, required confirmations, and trace metadata.
+
+AB-257 Stop policy: stop on final output, human needed, guardrail trip, validation failure, or max worker calls.
+
+
+24. PRACTICAL FIRST AGENT RUN EXAMPLE
+
+AB-258 User creates RFQ and uploads/pastes messy RFQ text.
+
+AB-259 Orchestrator receives event: rfq.intake.extract_requested.
+
+AB-260 Orchestrator gathers RFQ fields, pasted text, extracted PDF text, linked files, and company ID.
+
+AB-261 Orchestrator calls Intake Extraction Worker.
+
+AB-262 Intake Extraction Worker returns structured extraction with fields, confidence, missing information, risks, and conflicts.
+
+AB-263 Orchestrator validates the output schema.
+
+AB-264 Orchestrator compares extracted fields against existing human-entered RFQ fields.
+
+AB-265 Orchestrator proposes field updates without overwriting human-entered values.
+
+AB-266 User reviews and applies accepted fields.
+
+AB-267 Applied fields create activity events with runId and correlationId.
+
+
+25. PRACTICAL ORCHESTRATED MULTI-WORKER EXAMPLE
+
+AB-268 User clicks "Run capability check" on an RFQ.
+
+AB-269 Orchestrator gathers RFQ, extracted fields, drawing notes, capability profile, files, and prior check results.
+
+AB-270 If drawing notes are missing, Orchestrator may run Drawing Review Worker first.
+
+AB-271 Orchestrator then runs Capability Check Worker with verified context.
+
+AB-272 Capability Check Worker returns compatibility status, risks, missing confirmations, and explanation.
+
+AB-273 Orchestrator validates output and applies business rules.
+
+AB-274 Orchestrator shows the result to the user as a decision-support card.
+
+AB-275 User marks "proceed," "decline," or "needs more info."
+
+AB-276 Orchestrator creates activity event and updates RFQ stage.
+
+
+26. DECISIONS FOR CORVUS V1
+
+AB-277 Use manager/orchestrator pattern, not decentralized handoffs.
+
+AB-278 Keep agents hidden from normal UI.
+
+AB-279 Use structured outputs for every worker.
+
+AB-280 Use human confirmation for pricing, due dates, quality, shipping, and destructive actions.
+
+AB-281 Build deterministic workflows before agentic workflows.
+
+AB-282 Build RFQ extraction as the first worker.
+
+AB-283 Use Firebase records as primary memory.
+
+AB-284 Defer vector/RAG until enough real data exists.
+
+AB-285 Defer Slack until mock communication layer works.
+
+AB-286 Defer email until the core app and job flow are useful.
+
+AB-287 Defer full agent framework adoption until the homegrown loop proves its needs.
+
+AB-288 The first Corvus agent framework should be small enough to understand in one sitting.
+
