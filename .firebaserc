@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "corvus-lite"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }

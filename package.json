@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "firebase:deploy:rules": "npx firebase-tools deploy --only firestore:rules,storage",
+    "firebase:deploy:firestore:rules": "npx firebase-tools deploy --only firestore:rules",
+    "firebase:deploy:storage:rules": "npx firebase-tools deploy --only storage",
+    "firebase:deploy:rules": "npm run firebase:deploy:firestore:rules && npm run firebase:deploy:storage:rules",
     "firebase:deploy:indexes": "npx firebase-tools deploy --only firestore:indexes"
   },
   "dependencies": {

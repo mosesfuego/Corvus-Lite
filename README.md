@@ -121,10 +121,22 @@ Console setup checklist:
 5. Go to **Project settings > General > Your apps** and create/register a Web app if one does not already exist.
 6. Copy the Web app config values into `.env.local`.
 
-Deploy Firestore and Storage rules once Firebase CLI is installed and authenticated:
+Deploy Firestore rules once Firebase CLI is installed and authenticated:
 
 ```bash
-npm run firebase:deploy:rules
+npm run firebase:deploy:firestore:rules
+```
+
+Storage rules require Firebase Storage to be initialized first in the Firebase Console:
+
+```text
+Firebase Console -> Storage -> Get Started
+```
+
+After Storage is initialized, deploy Storage rules:
+
+```bash
+npm run firebase:deploy:storage:rules
 ```
 
 Deploy indexes when indexes are added:
