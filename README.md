@@ -110,6 +110,40 @@ Create a Firebase project and enable:
 
 The app can render without real Firebase values, but sign in, sign up, Firestore, and Storage require a configured project.
 
+This repo is already pointed at the Firebase project alias `corvus-lite` through `.firebaserc`.
+
+Console setup checklist:
+
+1. Open Firebase Console for the `corvus-lite` project.
+2. Go to **Authentication > Sign-in method** and enable **Email/Password**.
+3. Go to **Firestore Database** and create the database.
+4. Go to **Storage** and create the default bucket.
+5. Go to **Project settings > General > Your apps** and create/register a Web app if one does not already exist.
+6. Copy the Web app config values into `.env.local`.
+
+Deploy Firestore and Storage rules once Firebase CLI is installed and authenticated:
+
+```bash
+npm run firebase:deploy:rules
+```
+
+Deploy indexes when indexes are added:
+
+```bash
+npm run firebase:deploy:indexes
+```
+
+The current v1 rules expect company documents to contain:
+
+```ts
+{
+  ownerUid: string;
+  memberUids: string[];
+}
+```
+
+Most operational records should include a `companyId` field so rules can enforce tenant membership.
+
 ## Scripts
 
 ```bash

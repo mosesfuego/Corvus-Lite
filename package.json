@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "firebase:deploy:rules": "npx firebase-tools deploy --only firestore:rules,storage",
+    "firebase:deploy:indexes": "npx firebase-tools deploy --only firestore:indexes"
   },
   "dependencies": {
     "firebase": "^12.12.1",
