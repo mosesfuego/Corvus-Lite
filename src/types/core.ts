@@ -55,3 +55,81 @@ export type ActivityEvent = {
   timestamp: string;
   actor: "user" | "corvus" | "system";
 };
+
+export type UserRole = "owner" | "manager" | "staff" | "inspector" | "shipping";
+
+export type UserProfile = {
+  id: string;
+  uid: string;
+  email: string;
+  displayName: string;
+  role: UserRole;
+  companyId: string | null;
+  createdAt?: unknown;
+  updatedAt?: unknown;
+};
+
+export type Company = {
+  id: string;
+  name: string;
+  shopType: string;
+  mainContactName: string;
+  mainContactEmail: string;
+  timezone: string;
+  ownerUid: string;
+  memberUids: string[];
+  createdAt?: unknown;
+  updatedAt?: unknown;
+};
+
+export type StaffMember = {
+  id: string;
+  companyId: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  createdAt?: unknown;
+  updatedAt?: unknown;
+};
+
+export type CapabilityProfile = {
+  id: string;
+  companyId: string;
+  machines: string[];
+  materialsSupported: string[];
+  materialsAvoided: string[];
+  inHouseProcesses: string[];
+  outsideProcesses: string[];
+  inspectionEquipment: string[];
+  certifications: string[];
+  preferredWork: string;
+  workToAvoid: string;
+  toleranceComfort: string;
+  notes: string;
+  createdAt?: unknown;
+  updatedAt?: unknown;
+};
+
+export type CompanyOnboardingInput = {
+  companyName: string;
+  shopType: string;
+  mainContactName: string;
+  mainContactEmail: string;
+  timezone: string;
+  machines: string[];
+  materialsSupported: string[];
+  materialsAvoided: string[];
+  inHouseProcesses: string[];
+  outsideProcesses: string[];
+  inspectionEquipment: string[];
+  certifications: string[];
+  preferredWork: string;
+  workToAvoid: string;
+  toleranceComfort: string;
+  notes: string;
+  staff: Array<{
+    name: string;
+    email: string;
+    role: UserRole;
+  }>;
+};

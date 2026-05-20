@@ -2,6 +2,7 @@
 
 import { JobFlow } from "@/components/dashboard/job-flow";
 import { StatusPill } from "@/components/ui/status-pill";
+import { useCompanyContext } from "@/context/CompanyContext";
 import { demoActivity, demoIssues, demoJobs } from "@/lib/demo/shop-data";
 import {
   AlertTriangle,
@@ -31,6 +32,7 @@ const boardColumns = [
 
 export function CommandCenter() {
   const selectedJob = demoJobs[0];
+  const { company, profile } = useCompanyContext();
 
   return (
     <div className="min-h-screen p-6">
@@ -38,11 +40,12 @@ export function CommandCenter() {
         <div>
           <p className="text-sm font-medium text-teal-700">Friday shop pulse</p>
           <h1 className="mt-1 text-3xl font-semibold text-slate-950">
-            Good morning, Marcus
+            Good morning, {profile?.displayName?.split(" ")[0] || "manager"}
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-slate-600">
-            Corvus is tracking active jobs, open issues, quality handoffs, and
-            shipping readiness. Agentic workers stay behind the scenes.
+            {company?.name
+              ? `${company.name} is set up. Corvus is ready to track active jobs, open issues, quality handoffs, and shipping readiness.`
+              : "Corvus is ready to track active jobs, open issues, quality handoffs, and shipping readiness."}
           </p>
         </div>
 

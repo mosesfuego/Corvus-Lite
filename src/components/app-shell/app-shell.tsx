@@ -1,6 +1,7 @@
 "use client";
 
 import { signOutCurrentUser } from "@/lib/firebase/auth";
+import { useCompanyContext } from "@/context/CompanyContext";
 import {
   ClipboardList,
   Factory,
@@ -28,6 +29,7 @@ const navItems = [
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { company, profile } = useCompanyContext();
 
   async function handleSignOut() {
     await signOutCurrentUser();
@@ -45,7 +47,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <div className="text-base font-semibold text-slate-950">
               Corvus Lite
             </div>
-            <div className="text-xs text-slate-500">Shop control panel</div>
+            <div className="text-xs text-slate-500">
+              {company?.name ?? "Shop control panel"}
+            </div>
           </div>
         </Link>
 
@@ -79,6 +83,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <LogOut size={18} />
           Sign out
         </button>
+
+        {profile ? (
+          <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-3">
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Signed in as
+            </div>
+            <div className="mt-1 truncate text-sm font-medium text-slate-800">
+              {profile.displayName || profile.email}
+            </div>
+            <div className="mt-1 text-xs capitalize text-slate-500">
+              {profile.role}
+            </div>
+          </div>
+        ) : null}
       </aside>
 
       <main className="min-w-0 flex-1">{children}</main>

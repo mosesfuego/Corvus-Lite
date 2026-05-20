@@ -27,7 +27,19 @@ Work completed so far:
 - Added the three founding documents under `founding documents/`.
 - Verified locally that `npm run build`, `npm run typecheck`, and `npm run lint` pass.
 
-The codebase is intentionally still a starter. It is not yet connected to real Firestore records, company onboarding, RFQ intake, or the agent framework.
+Chunk 1 completed:
+
+- Added first-login onboarding at `/onboarding`.
+- Added company/shop creation on Firebase Auth + Firestore.
+- Set the first signed-in user role to `manager`.
+- Added structured capability profile capture for machines, materials, processes, inspection equipment, certifications, preferred work, avoided work, tolerance comfort, and notes.
+- Added key staff capture without real invitations yet.
+- Added a simulated machine shop profile button for fast local testing.
+- Added company context loading for protected app pages.
+- Added Settings view for company summary, staff summary, and capability profile editing.
+- Kept the implementation Spark-plan friendly: no Cloud Functions and no required Storage usage.
+
+The codebase is intentionally still a starter. Company onboarding now writes to Firestore, but RFQ intake, job records, file upload, and the agent framework are not implemented yet.
 
 ## Current Product State
 
