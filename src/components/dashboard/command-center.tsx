@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   ArrowRight,
   ClipboardList,
+  Sparkles,
   MessageSquare,
   Search,
 } from "lucide-react";
@@ -34,22 +35,35 @@ export function CommandCenter() {
   const readyToShip = jobs.filter((job) => job.status === "ready_to_ship");
   const atRisk = jobs.filter((job) => job.risk !== "low");
   const metrics = [
-    { label: "Active Jobs", value: String(jobs.length), detail: "Firestore jobs" },
-    { label: "At Risk", value: String(atRisk.length), detail: "Medium/high risk" },
+    {
+      label: "Active Jobs",
+      value: String(jobs.length),
+      detail: "In the shop board",
+      accent: "border-t-teal-500",
+    },
+    {
+      label: "At Risk",
+      value: String(atRisk.length),
+      detail: "Medium/high risk",
+      accent: "border-t-amber-500",
+    },
     {
       label: "Open Issues",
       value: String(openIssues.length),
       detail: "Job or machine issues",
+      accent: "border-t-red-500",
     },
     {
       label: "Waiting Inspection",
       value: String(waitingInspection.length),
       detail: "Quality handoffs",
+      accent: "border-t-sky-500",
     },
     {
       label: "Ready to Ship",
       value: String(readyToShip.length),
       detail: "Shipping queue",
+      accent: "border-t-emerald-500",
     },
   ];
 
@@ -61,7 +75,9 @@ export function CommandCenter() {
     <div className="min-h-screen p-6">
       <header className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div>
-          <p className="text-sm font-medium text-teal-700">Friday shop pulse</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">
+            Shop pulse
+          </p>
           <h1 className="mt-1 text-3xl font-semibold text-slate-950">
             Good morning, {profile?.displayName?.split(" ")[0] || "manager"}
           </h1>
@@ -72,7 +88,7 @@ export function CommandCenter() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-500 shadow-sm">
+        <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-500 shadow-sm">
           <Search size={17} />
           <span className="min-w-64">Search jobs, customers, files...</span>
         </div>
@@ -91,7 +107,7 @@ export function CommandCenter() {
       <section className="mb-6 grid gap-3 md:grid-cols-3 xl:grid-cols-5">
         {metrics.map((metric) => (
           <div
-            className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm"
+            className={`rounded-lg border border-t-2 border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md ${metric.accent}`}
             key={metric.label}
           >
             <div className="text-sm font-medium text-slate-500">{metric.label}</div>
@@ -133,7 +149,7 @@ export function CommandCenter() {
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-950">Jobs board</h2>
               <Link
-                className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-semibold text-white"
+                className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-semibold text-white transition hover:bg-teal-700"
                 href="/jobs"
               >
                 <ClipboardList size={16} />
@@ -171,7 +187,10 @@ export function CommandCenter() {
 
         <aside className="space-y-6">
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <h2 className="text-lg font-semibold text-slate-950">Shop Pulse</h2>
+            <div className="flex items-center gap-2">
+              <Sparkles className="text-teal-700" size={18} />
+              <h2 className="text-lg font-semibold text-slate-950">Shop Pulse</h2>
+            </div>
             <p className="mt-3 text-sm leading-6 text-slate-600">
               {jobs.length} active job{jobs.length === 1 ? "" : "s"},{" "}
               {openIssues.length} open issue
@@ -181,13 +200,13 @@ export function CommandCenter() {
             </p>
             <div className="mt-4 grid grid-cols-2 gap-2">
               <Link
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-teal-200 hover:bg-teal-50 hover:text-teal-800"
                 href="/jobs"
               >
                 Open jobs
               </Link>
               <Link
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-teal-200 hover:bg-teal-50 hover:text-teal-800"
                 href="/issues"
               >
                 Open issues
@@ -198,40 +217,55 @@ export function CommandCenter() {
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
             <h2 className="text-lg font-semibold text-slate-950">Open issues</h2>
             <div className="mt-4 space-y-3">
-              {openIssues.slice(0, 4).map((issue) => (
-                <div className="rounded-lg border border-slate-200 p-3" key={issue.id}>
-                  <div className="flex items-start gap-2">
-                    <AlertTriangle className="mt-0.5 text-amber-600" size={16} />
-                    <div>
-                      <div className="text-sm font-semibold text-slate-800">
-                        {issue.title}
-                      </div>
-                      <div className="mt-1 text-xs text-slate-500">
-                        {issue.target} / {issue.owner}
+              {openIssues.length === 0 ? (
+                <p className="rounded-lg bg-slate-50 p-3 text-sm text-slate-500">
+                  No open issues. Nice and quiet.
+                </p>
+              ) : (
+                openIssues.slice(0, 4).map((issue) => (
+                  <div
+                    className="rounded-lg border border-slate-200 p-3 transition hover:border-amber-200 hover:bg-amber-50/40"
+                    key={issue.id}
+                  >
+                    <div className="flex items-start gap-2">
+                      <AlertTriangle className="mt-0.5 text-amber-600" size={16} />
+                      <div>
+                        <div className="text-sm font-semibold text-slate-800">
+                          {issue.title}
+                        </div>
+                        <div className="mt-1 text-xs text-slate-500">
+                          {issue.target} / {issue.owner}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </section>
 
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
             <h2 className="text-lg font-semibold text-slate-950">Activity</h2>
             <div className="mt-4 space-y-4">
-              {activityEvents.slice(0, 5).map((event) => (
-                <div className="flex gap-3" key={event.id}>
-                  <MessageSquare className="mt-0.5 text-teal-700" size={16} />
-                  <div>
-                    <div className="text-sm text-slate-700">{event.message}</div>
-                    <div className="mt-1 text-xs text-slate-400">
-                      {event.timestamp}
+              {activityEvents.length === 0 ? (
+                <p className="rounded-lg bg-slate-50 p-3 text-sm text-slate-500">
+                  Activity will appear here as jobs, issues, and handoffs move.
+                </p>
+              ) : (
+                activityEvents.slice(0, 5).map((event) => (
+                  <div className="flex gap-3" key={event.id}>
+                    <MessageSquare className="mt-0.5 text-teal-700" size={16} />
+                    <div>
+                      <div className="text-sm text-slate-700">{event.message}</div>
+                      <div className="mt-1 text-xs text-slate-400">
+                        {event.timestamp}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
-            <button className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-teal-700">
+            <button className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-teal-700 transition hover:text-teal-900">
               View timeline
               <ArrowRight size={15} />
             </button>

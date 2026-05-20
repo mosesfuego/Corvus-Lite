@@ -12,14 +12,14 @@ Work completed so far:
 
 - Created the GitHub repo at `mosesfuego/Corvus-Lite`.
 - Used `milliorn/nextjs-firebase-starter` as a sourdough starter, not as a full product template.
-- Kept the useful starter foundation: Next.js, React, TypeScript, Firebase Auth, Firestore, Firebase Storage, Tailwind, and protected-route patterns.
+- Kept the useful starter foundation: Next.js, React, TypeScript, Firebase Auth, Firestore, Tailwind, and protected-route patterns.
 - Replaced the generic starter UI with a Corvus Lite-specific starter shell.
 - Added a landing page that frames Corvus Lite as a machine shop command center.
 - Added sign-in and sign-up pages backed by Firebase Auth helpers.
 - Added a protected app layout with a left-side Corvus Lite navigation shell.
-- Added a Command Center scaffold with demo shop metrics, job flow, jobs board, open issues, shop pulse, and activity.
-- Added a Jobs page scaffold using demo job data.
-- Added a Settings placeholder for company onboarding and capability setup.
+- Added a Command Center with Firestore-backed shop metrics, job flow, jobs board, open issues, shop pulse, and activity.
+- Added a Jobs page backed by Firestore records.
+- Added Settings for company and capability setup.
 - Added typed demo data for jobs, issues, activity, and stage flow.
 - Added Firebase client helpers for Auth, Firestore, and Storage.
 - Made Firebase initialization lazy so the app can build before real Firebase credentials are added.
@@ -50,7 +50,7 @@ Chunk 2 completed:
 - Added Command Center metrics and job board based on real Firestore records.
 - Added a seed-demo-records path so local testing can populate a simulated machine shop after onboarding.
 
-The codebase is intentionally still a starter. Company onboarding and core job records now write to Firestore, but RFQ intake, file upload, quote/PO flow, and the agent framework are not implemented yet.
+The codebase is intentionally still a starter. Company onboarding and core job records now write to Firestore, but RFQ intake, file upload/storage, quote/PO flow, quality signoff, shipping readiness, chat, and the agent framework are not implemented yet.
 
 ## Current Product State
 
@@ -59,13 +59,17 @@ This repository starts from the useful parts of `milliorn/nextjs-firebase-starte
 The app currently includes:
 
 - Next.js 15 + React 19 + TypeScript
-- Firebase client setup for Auth, Firestore, and Storage
+- Firebase client setup for Auth and Firestore
 - Email/password sign in and sign up
 - Protected app layout
-- Corvus Lite command center scaffold
-- Jobs list scaffold
-- Settings placeholder for company/capability setup
-- Demo data for jobs, issues, activity, and job flow
+- Corvus Lite command center
+- First-login company/shop onboarding
+- Structured capability profile capture and editing
+- Firestore-backed jobs board
+- Job detail pages with stage flow, status controls, issues, and activity
+- Issues page
+- Customers page
+- Seedable demo data for jobs, issues, activity, and job flow
 - Founding product/agent documents
 
 ## Founding Documents
@@ -84,7 +88,7 @@ Future Codex build sessions should read the relevant phase in the build instruct
 Frontend: Next.js + React
 Auth: Firebase Auth
 Database: Firestore
-Storage: Firebase Storage
+Storage: Firebase Storage, later
 Backend: Firebase Cloud Functions, later
 Hosting: Firebase Hosting, later
 LLM: Kimi K2.6, later
@@ -129,9 +133,9 @@ Create a Firebase project and enable:
 
 - Authentication: Email/Password provider
 - Firestore Database
-- Storage
+- Storage, later when file upload work begins
 
-The app can render without real Firebase values, but sign in, sign up, Firestore, and Storage require a configured project.
+The app can render without real Firebase values, but sign in, sign up, and Firestore writes require a configured project.
 
 This repo is already pointed at the Firebase project alias `corvus-lite` through `.firebaserc`.
 
@@ -140,9 +144,8 @@ Console setup checklist:
 1. Open Firebase Console for the `corvus-lite` project.
 2. Go to **Authentication > Sign-in method** and enable **Email/Password**.
 3. Go to **Firestore Database** and create the database.
-4. Go to **Storage** and create the default bucket.
-5. Go to **Project settings > General > Your apps** and create/register a Web app if one does not already exist.
-6. Copy the Web app config values into `.env.local`.
+4. Go to **Project settings > General > Your apps** and create/register a Web app if one does not already exist.
+5. Copy the Web app config values into `.env.local`.
 
 Deploy Firestore rules once Firebase CLI is installed and authenticated:
 
@@ -193,7 +196,7 @@ npm run typecheck
 
 Follow [`CORVUS_LITE_BUILD_INSTRUCTIONS.md`](./founding%20documents/CORVUS_LITE_BUILD_INSTRUCTIONS.md):
 
-1. Finish Phase 0 foundation checks.
-2. Build Phase 1 auth, tenant, and company onboarding.
-3. Build Phase 2 core data model.
-4. Build Phase 3 command center from real records instead of demo data.
+1. Tighten Phase 2 data-model gaps that matter before RFQ intake: issue scope, machine linkage, contact records, and future file metadata.
+2. Continue into Phase 5 RFQ/job intake.
+3. Add Phase 6 file upload only when Firebase Storage is initialized.
+4. Keep agent work deferred until deterministic RFQ, job, issue, and file workflows are useful.
