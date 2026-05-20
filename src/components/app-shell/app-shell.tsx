@@ -21,7 +21,8 @@ const navItems = [
   { href: "/jobs", label: "Jobs", icon: ClipboardList },
   { href: "/command-center", label: "Shop Floor", icon: Factory },
   { href: "/command-center", label: "Quality", icon: ShieldCheck },
-  { href: "/command-center", label: "Customers", icon: Users },
+  { href: "/customers", label: "Customers", icon: Users },
+  { href: "/issues", label: "Issues", icon: ClipboardList },
   { href: "/command-center", label: "Files", icon: FileText },
   { href: "/settings", label: "Settings", icon: Settings },
 ];

@@ -39,7 +39,18 @@ Chunk 1 completed:
 - Added Settings view for company summary, staff summary, and capability profile editing.
 - Kept the implementation Spark-plan friendly: no Cloud Functions and no required Storage usage.
 
-The codebase is intentionally still a starter. Company onboarding now writes to Firestore, but RFQ intake, job records, file upload, and the agent framework are not implemented yet.
+Chunk 2 completed:
+
+- Added Firestore-backed core records for customers, jobs, issues, and activity events.
+- Added a small operations data layer for creating jobs, updating job state, creating/resolving issues, recording activity, and seeding demo records.
+- Added a jobs board backed by Firestore records instead of static demo-only data.
+- Added job detail pages with visual stage flow, state controls, job-specific issues, and activity timeline.
+- Added Issues page for job/site issue creation and resolution.
+- Added Customers page for early customer memory.
+- Added Command Center metrics and job board based on real Firestore records.
+- Added a seed-demo-records path so local testing can populate a simulated machine shop after onboarding.
+
+The codebase is intentionally still a starter. Company onboarding and core job records now write to Firestore, but RFQ intake, file upload, quote/PO flow, and the agent framework are not implemented yet.
 
 ## Current Product State
 

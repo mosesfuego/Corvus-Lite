@@ -25,8 +25,10 @@ export type RiskLevel = "low" | "medium" | "high";
 
 export type Job = {
   id: string;
+  companyId?: string;
   jobNumber: string;
   customer: string;
+  customerId?: string;
   part: string;
   revision: string;
   dueDate: string;
@@ -38,22 +40,58 @@ export type Job = {
   stage: JobStage;
   status: JobStatus;
   issueCount: number;
+  notes?: string;
+  createdAt?: unknown;
+  updatedAt?: unknown;
 };
 
 export type Issue = {
   id: string;
+  companyId?: string;
+  jobId?: string;
   title: string;
   severity: RiskLevel;
   target: string;
   owner: string;
   status: "open" | "resolved";
+  type?: string;
+  notes?: string;
+  createdAt?: unknown;
+  updatedAt?: unknown;
 };
 
 export type ActivityEvent = {
   id: string;
+  companyId?: string;
+  jobId?: string;
   message: string;
   timestamp: string;
   actor: "user" | "corvus" | "system";
+  createdAt?: unknown;
+  updatedAt?: unknown;
+};
+
+export type Customer = {
+  id: string;
+  companyId: string;
+  name: string;
+  contactName: string;
+  contactEmail: string;
+  notes: string;
+  createdAt?: unknown;
+  updatedAt?: unknown;
+};
+
+export type FileRecord = {
+  id: string;
+  companyId: string;
+  jobId?: string;
+  rfqId?: string;
+  name: string;
+  type: string;
+  source: "manual" | "upload" | "future_storage";
+  createdAt?: unknown;
+  updatedAt?: unknown;
 };
 
 export type UserRole = "owner" | "manager" | "staff" | "inspector" | "shipping";

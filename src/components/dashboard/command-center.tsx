@@ -1,29 +1,23 @@
 "use client";
 
 import { JobFlow } from "@/components/dashboard/job-flow";
+import { EmptyRecords } from "@/components/core/empty-records";
+import { JobCard } from "@/components/jobs/job-card";
 import { StatusPill } from "@/components/ui/status-pill";
 import { useCompanyContext } from "@/context/CompanyContext";
-import { demoActivity, demoIssues, demoJobs } from "@/lib/demo/shop-data";
+import { useCoreRecords } from "@/hooks/useCoreRecords";
+import type { JobStatus } from "@/types/core";
 import {
   AlertTriangle,
   ArrowRight,
   ClipboardList,
-  FileUp,
   MessageSquare,
-  ScanLine,
   Search,
 } from "lucide-react";
+import Link from "next/link";
 
-const metrics = [
-  { label: "Active Jobs", value: "42", detail: "8 due this week" },
-  { label: "At Risk", value: "7", detail: "3 due date risks" },
-  { label: "Open Issues", value: "4", detail: "2 machine/material" },
-  { label: "Waiting Inspection", value: "5", detail: "1 FAI request" },
-  { label: "Ready to Ship", value: "3", detail: "2 need docs" },
-];
-
-const boardColumns = [
-  { label: "Ready", statuses: ["ready"] },
+const boardColumns: Array<{ label: string; statuses: JobStatus[] }> = [
+  { label: "Ready", statuses: ["ready", "queued"] },
   { label: "In Progress", statuses: ["in_progress"] },
   { label: "Blocked", statuses: ["blocked"] },
   { label: "Inspection", statuses: ["inspection"] },
@@ -31,8 +25,37 @@ const boardColumns = [
 ];
 
 export function CommandCenter() {
-  const selectedJob = demoJobs[0];
   const { company, profile } = useCompanyContext();
+  const { activityEvents, error, issues, jobs, loading, seedDemo } =
+    useCoreRecords();
+  const selectedJob = jobs[0];
+  const openIssues = issues.filter((issue) => issue.status === "open");
+  const waitingInspection = jobs.filter((job) => job.status === "inspection");
+  const readyToShip = jobs.filter((job) => job.status === "ready_to_ship");
+  const atRisk = jobs.filter((job) => job.risk !== "low");
+  const metrics = [
+    { label: "Active Jobs", value: String(jobs.length), detail: "Firestore jobs" },
+    { label: "At Risk", value: String(atRisk.length), detail: "Medium/high risk" },
+    {
+      label: "Open Issues",
+      value: String(openIssues.length),
+      detail: "Job or machine issues",
+    },
+    {
+      label: "Waiting Inspection",
+      value: String(waitingInspection.length),
+      detail: "Quality handoffs",
+    },
+    {
+      label: "Ready to Ship",
+      value: String(readyToShip.length),
+      detail: "Shipping queue",
+    },
+  ];
+
+  if (loading) {
+    return <div className="p-6 text-sm text-slate-600">Loading Command Center...</div>;
+  }
 
   return (
     <div className="min-h-screen p-6">
@@ -55,6 +78,16 @@ export function CommandCenter() {
         </div>
       </header>
 
+      {error ? (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          {error}
+        </div>
+      ) : null}
+
+      {jobs.length === 0 ? (
+        <EmptyRecords onSeed={seedDemo} title="Command Center needs records" />
+      ) : null}
+
       <section className="mb-6 grid gap-3 md:grid-cols-3 xl:grid-cols-5">
         {metrics.map((metric) => (
           <div
@@ -76,32 +109,41 @@ export function CommandCenter() {
             <div className="mb-3 flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-slate-950">
-                  Job flow: Job {selectedJob.jobNumber}
+                  Job flow: Job {selectedJob?.jobNumber ?? "not selected"}
                 </h2>
                 <p className="text-sm text-slate-500">
-                  {selectedJob.customer} / {selectedJob.part}
+                  {selectedJob
+                    ? `${selectedJob.customer} / ${selectedJob.part}`
+                    : "Seed or create a job to see its stage flow."}
                 </p>
               </div>
-              <StatusPill tone={selectedJob.risk}>Medium risk</StatusPill>
+              {selectedJob ? (
+                <StatusPill tone={selectedJob.risk}>{selectedJob.risk} risk</StatusPill>
+              ) : null}
             </div>
-            <JobFlow
-              currentStage={selectedJob.stage}
-              hasIssue={selectedJob.issueCount > 0}
-            />
+            {selectedJob ? (
+              <JobFlow
+                currentStage={selectedJob.stage}
+                hasIssue={selectedJob.issueCount > 0}
+              />
+            ) : null}
           </section>
 
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-slate-950">Jobs board</h2>
-              <button className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-semibold text-white">
+              <Link
+                className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-semibold text-white"
+                href="/jobs"
+              >
                 <ClipboardList size={16} />
-                New RFQ
-              </button>
+                Jobs
+              </Link>
             </div>
 
             <div className="grid gap-3 xl:grid-cols-5">
               {boardColumns.map((column) => {
-                const jobs = demoJobs.filter((job) =>
+                const columnJobs = jobs.filter((job) =>
                   column.statuses.includes(job.status),
                 );
 
@@ -111,35 +153,13 @@ export function CommandCenter() {
                       <h3 className="text-sm font-semibold text-slate-700">
                         {column.label}
                       </h3>
-                      <span className="text-xs text-slate-400">{jobs.length}</span>
+                      <span className="text-xs text-slate-400">
+                        {columnJobs.length}
+                      </span>
                     </div>
                     <div className="space-y-3">
-                      {jobs.map((job) => (
-                        <div
-                          className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm"
-                          key={job.id}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <div>
-                              <div className="text-sm font-semibold text-slate-950">
-                                Job {job.jobNumber}
-                              </div>
-                              <div className="mt-1 text-xs text-slate-500">
-                                {job.customer}
-                              </div>
-                            </div>
-                            <StatusPill tone={job.risk}>{job.risk}</StatusPill>
-                          </div>
-                          <div className="mt-3 text-xs text-slate-600">
-                            {job.part} / Rev {job.revision}
-                          </div>
-                          <div className="mt-3 flex items-center justify-between text-xs text-slate-500">
-                            <span>Due {job.dueDate}</span>
-                            <span>
-                              {job.quantityComplete}/{job.quantityTotal}
-                            </span>
-                          </div>
-                        </div>
+                      {columnJobs.map((job) => (
+                        <JobCard job={job} key={job.id} />
                       ))}
                     </div>
                   </div>
@@ -153,26 +173,32 @@ export function CommandCenter() {
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
             <h2 className="text-lg font-semibold text-slate-950">Shop Pulse</h2>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              6 jobs need attention. 2 are blocked by material or machine issues,
-              3 are waiting inspection, and Job 1055 has a PO/date mismatch to
-              review before release.
+              {jobs.length} active job{jobs.length === 1 ? "" : "s"},{" "}
+              {openIssues.length} open issue
+              {openIssues.length === 1 ? "" : "s"},{" "}
+              {waitingInspection.length} waiting inspection, and{" "}
+              {readyToShip.length} ready to ship.
             </p>
             <div className="mt-4 grid grid-cols-2 gap-2">
-              <button className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700">
-                <FileUp size={16} />
-                Upload RFQ
-              </button>
-              <button className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700">
-                <ScanLine size={16} />
-                Scan traveler
-              </button>
+              <Link
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700"
+                href="/jobs"
+              >
+                Open jobs
+              </Link>
+              <Link
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700"
+                href="/issues"
+              >
+                Open issues
+              </Link>
             </div>
           </section>
 
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
             <h2 className="text-lg font-semibold text-slate-950">Open issues</h2>
             <div className="mt-4 space-y-3">
-              {demoIssues.map((issue) => (
+              {openIssues.slice(0, 4).map((issue) => (
                 <div className="rounded-lg border border-slate-200 p-3" key={issue.id}>
                   <div className="flex items-start gap-2">
                     <AlertTriangle className="mt-0.5 text-amber-600" size={16} />
@@ -193,7 +219,7 @@ export function CommandCenter() {
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
             <h2 className="text-lg font-semibold text-slate-950">Activity</h2>
             <div className="mt-4 space-y-4">
-              {demoActivity.map((event) => (
+              {activityEvents.slice(0, 5).map((event) => (
                 <div className="flex gap-3" key={event.id}>
                   <MessageSquare className="mt-0.5 text-teal-700" size={16} />
                   <div>
