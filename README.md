@@ -61,9 +61,10 @@ Thursday sprint checkpoint completed:
 - Made RFQ creation grow lightweight customer/contact memory when new customer/contact data appears.
 - Added machine linkage fields for issues so blockers can become job, machine, or sitewide issues.
 - Added RFQs to the app navigation and Command Center metrics.
-- Added an agent-ready folder structure with shared agent types, registry, orchestrator entry point, and the first Intake Extraction Worker stub.
+- Added an agent-ready folder structure with shared agent types, registry, orchestrator entry point, and the first live Intake Extraction Worker.
+- Connected Kimi K2.6 through a server-side API route for RFQ extraction.
 
-The codebase is intentionally still a starter. Company onboarding, core job records, and manual RFQ intake now write to Firestore. The agent scaffold exists, but LLM/API wiring, file upload/storage, quote/PO flow, quality signoff, shipping readiness, and chat are not implemented yet.
+The codebase is intentionally still a starter. Company onboarding, core job records, and manual RFQ intake now write to Firestore. The RFQ intake agent can extract proposed fields for human review, but file upload/storage, quote/PO flow, quality signoff, shipping readiness, and chat are not implemented yet.
 
 ## Current Product State
 
@@ -211,7 +212,7 @@ npm run typecheck
 
 Follow [`CORVUS_LITE_BUILD_INSTRUCTIONS.md`](./founding%20documents/CORVUS_LITE_BUILD_INSTRUCTIONS.md):
 
-1. Connect the RFQ Intake Extraction Worker to the chosen LLM API.
-2. Add human review UI for extracted RFQ fields before writing changes.
-3. Add capability-check UI and worker using the stored company capability profile.
+1. Add an “apply reviewed extraction” flow that writes accepted RFQ fields without silently overwriting human edits.
+2. Add capability-check UI and worker using the stored company capability profile.
+3. Add quote-prep draft workflow after capability check.
 4. Add Phase 6 file upload only when Firebase Storage is initialized.
