@@ -20,6 +20,12 @@ import type {
 } from "@/types/core";
 import type { User } from "firebase/auth";
 
+const adminEmails = new Set(["mosesfuego@gmail.com"]);
+
+export function isAdminEmail(email?: string | null) {
+  return Boolean(email && adminEmails.has(email.toLowerCase()));
+}
+
 function nowFields() {
   return {
     updatedAt: serverTimestamp(),
@@ -95,7 +101,7 @@ export async function createInitialCompany(user: User, input: CompanyOnboardingI
     uid: user.uid,
     email: userEmail,
     displayName: userName,
-    role: "manager",
+    role: isAdminEmail(userEmail) ? "admin" : "manager",
     companyId,
     createdAt: serverTimestamp(),
     ...nowFields(),
@@ -122,7 +128,7 @@ export async function createInitialCompany(user: User, input: CompanyOnboardingI
     companyId,
     name: userName,
     email: userEmail,
-    role: "manager",
+    role: isAdminEmail(userEmail) ? "admin" : "manager",
     createdAt: serverTimestamp(),
     ...nowFields(),
   });
@@ -145,6 +151,19 @@ export async function createInitialCompany(user: User, input: CompanyOnboardingI
   await batch.commit();
 
   return companyId;
+}
+
+export async function ensureAdminProfileRole(profile: UserProfile) {
+  if (!isAdminEmail(profile.email) || profile.role === "admin") {
+    return profile;
+  }
+
+  await updateDoc(doc(getFirebaseDb(), "userProfiles", profile.uid), {
+    role: "admin",
+    ...nowFields(),
+  });
+
+  return { ...profile, role: "admin" as const };
 }
 
 export async function updateCapabilityProfile(

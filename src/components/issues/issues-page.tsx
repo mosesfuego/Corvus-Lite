@@ -1,16 +1,20 @@
 "use client";
 
 import { EmptyRecords } from "@/components/core/empty-records";
+import { useCompanyContext } from "@/context/CompanyContext";
 import { useCoreRecords } from "@/hooks/useCoreRecords";
 import type { RiskLevel } from "@/types/core";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 
 export function IssuesPageContent() {
-  const { addIssue, closeIssue, issues, jobs, loading, seedDemo } =
+  const { profile } = useCompanyContext();
+  const { addIssue, closeIssue, issues, jobs, loading, machines, seedDemo } =
     useCoreRecords();
+  const isAdmin = profile?.role === "admin";
   const [title, setTitle] = useState("");
   const [jobId, setJobId] = useState("");
+  const [machineId, setMachineId] = useState("");
   const [severity, setSeverity] = useState<RiskLevel>("medium");
   const [owner, setOwner] = useState("");
   const [type, setType] = useState("Waiting on material");
@@ -21,15 +25,22 @@ export function IssuesPageContent() {
   }
 
   const selectedJob = jobs.find((job) => job.id === jobId);
+  const selectedMachine = machines.find((machine) => machine.id === machineId);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     await addIssue({
       jobId: jobId || undefined,
+      machineId: !jobId && machineId ? machineId : undefined,
+      scope: jobId ? "job" : machineId ? "machine" : "sitewide",
       title,
       severity,
-      target: selectedJob ? `Job ${selectedJob.jobNumber}` : "Sitewide",
+      target: selectedJob
+        ? `Job ${selectedJob.jobNumber}`
+        : selectedMachine
+          ? `Machine ${selectedMachine.name}`
+          : "Sitewide",
       owner,
       type,
       notes,
@@ -37,6 +48,7 @@ export function IssuesPageContent() {
 
     setTitle("");
     setJobId("");
+    setMachineId("");
     setSeverity("medium");
     setOwner("");
     setType("Waiting on material");
@@ -54,7 +66,11 @@ export function IssuesPageContent() {
       </div>
 
       {jobs.length === 0 && issues.length === 0 ? (
-        <EmptyRecords onSeed={seedDemo} title="No jobs or issues yet" />
+        <EmptyRecords
+          onSeed={seedDemo}
+          showSeed={isAdmin}
+          title="No jobs or issues yet"
+        />
       ) : (
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
@@ -120,6 +136,22 @@ export function IssuesPageContent() {
                   {jobs.map((job) => (
                     <option key={job.id} value={job.id}>
                       Job {job.jobNumber} / {job.customer}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm font-medium text-slate-700">
+                Attach to machine
+                <select
+                  className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-teal-600 focus:ring-2 focus:ring-teal-100"
+                  disabled={Boolean(jobId)}
+                  onChange={(event) => setMachineId(event.target.value)}
+                  value={machineId}
+                >
+                  <option value="">No machine</option>
+                  {machines.map((machine) => (
+                    <option key={machine.id} value={machine.id}>
+                      {machine.name} / {machine.type}
                     </option>
                   ))}
                 </select>

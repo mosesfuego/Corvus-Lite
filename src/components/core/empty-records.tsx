@@ -4,9 +4,11 @@ import { Database } from "lucide-react";
 
 export function EmptyRecords({
   onSeed,
+  showSeed = true,
   title = "No shop records yet",
 }: {
   onSeed: () => Promise<void>;
+  showSeed?: boolean;
   title?: string;
 }) {
   return (
@@ -20,13 +22,15 @@ export function EmptyRecords({
         issues, and activity events. This gives Chunk 2 real Firestore records
         to work with.
       </p>
-      <button
-        className="mt-5 rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white"
-        onClick={() => void onSeed()}
-        type="button"
-      >
-        Seed demo shop records
-      </button>
+      {showSeed ? (
+        <button
+          className="mt-5 rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white"
+          onClick={() => void onSeed()}
+          type="button"
+        >
+          Seed demo shop records
+        </button>
+      ) : null}
     </div>
   );
 }

@@ -11,6 +11,7 @@ import {
   AlertTriangle,
   ArrowRight,
   ClipboardList,
+  Inbox,
   Sparkles,
   MessageSquare,
   Search,
@@ -27,19 +28,26 @@ const boardColumns: Array<{ label: string; statuses: JobStatus[] }> = [
 
 export function CommandCenter() {
   const { company, profile } = useCompanyContext();
-  const { activityEvents, error, issues, jobs, loading, seedDemo } =
+  const { activityEvents, error, issues, jobs, loading, rfqs, seedDemo } =
     useCoreRecords();
   const selectedJob = jobs[0];
+  const isAdmin = profile?.role === "admin";
   const openIssues = issues.filter((issue) => issue.status === "open");
   const waitingInspection = jobs.filter((job) => job.status === "inspection");
   const readyToShip = jobs.filter((job) => job.status === "ready_to_ship");
   const atRisk = jobs.filter((job) => job.risk !== "low");
   const metrics = [
     {
+      label: "RFQs",
+      value: String(rfqs.length),
+      detail: "Intake packages",
+      accent: "border-t-teal-500",
+    },
+    {
       label: "Active Jobs",
       value: String(jobs.length),
       detail: "In the shop board",
-      accent: "border-t-teal-500",
+      accent: "border-t-slate-500",
     },
     {
       label: "At Risk",
@@ -101,7 +109,11 @@ export function CommandCenter() {
       ) : null}
 
       {jobs.length === 0 ? (
-        <EmptyRecords onSeed={seedDemo} title="Command Center needs records" />
+        <EmptyRecords
+          onSeed={seedDemo}
+          showSeed={isAdmin}
+          title="Command Center needs records"
+        />
       ) : null}
 
       <section className="mb-6 grid gap-3 md:grid-cols-3 xl:grid-cols-5">
@@ -198,7 +210,14 @@ export function CommandCenter() {
               {waitingInspection.length} waiting inspection, and{" "}
               {readyToShip.length} ready to ship.
             </p>
-            <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="mt-4 grid gap-2 sm:grid-cols-3">
+              <Link
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-teal-200 hover:bg-teal-50 hover:text-teal-800"
+                href="/rfqs"
+              >
+                <Inbox size={15} />
+                RFQs
+              </Link>
               <Link
                 className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-teal-200 hover:bg-teal-50 hover:text-teal-800"
                 href="/jobs"

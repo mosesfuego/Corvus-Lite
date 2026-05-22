@@ -16,6 +16,7 @@ type StaffDraft = {
 };
 
 const roleOptions: UserRole[] = [
+  "admin",
   "manager",
   "staff",
   "inspector",
@@ -79,6 +80,7 @@ export function CompanyOnboardingForm() {
   const [staff, setStaff] = useState<StaffDraft[]>(defaultStaff);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isAdminSetup = user?.email?.toLowerCase() === "mosesfuego@gmail.com";
 
   function updateStaff(index: number, patch: Partial<StaffDraft>) {
     setStaff((current) =>
@@ -177,13 +179,15 @@ export function CompanyOnboardingForm() {
             capability profile Corvus will use later for RFQ and capability checks.
           </p>
         </div>
-        <button
-          className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
-          onClick={useDemoProfile}
-          type="button"
-        >
-          Use simulated machine shop profile
-        </button>
+        {isAdminSetup ? (
+          <button
+            className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
+            onClick={useDemoProfile}
+            type="button"
+          >
+            Use simulated machine shop profile
+          </button>
+        ) : null}
       </div>
 
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">

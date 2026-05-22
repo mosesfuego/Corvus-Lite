@@ -2,6 +2,7 @@
 
 import { useAuthContext } from "@/context/AuthContext";
 import {
+  ensureAdminProfileRole,
   getCapabilityProfile,
   getCompany,
   getUserProfile,
@@ -67,7 +68,10 @@ export function CompanyContextProvider({ children }: { children: ReactNode }) {
     }
 
     setLoading(true);
-    const nextProfile = await getUserProfile(user.uid);
+    const foundProfile = await getUserProfile(user.uid);
+    const nextProfile = foundProfile
+      ? await ensureAdminProfileRole(foundProfile)
+      : null;
     setProfile(nextProfile);
 
     if (!nextProfile?.companyId) {

@@ -4,6 +4,7 @@ import { useCompanyContext } from "@/context/CompanyContext";
 import {
   createIssue,
   createJob,
+  createRfq,
   listCoreRecords,
   resolveIssue,
   seedDemoCoreData,
@@ -11,12 +12,16 @@ import {
   type CoreRecords,
   type CreateIssueInput,
   type CreateJobInput,
+  type CreateRfqInput,
 } from "@/lib/firebase/operations";
 import type { Issue, Job, JobStage, JobStatus, RiskLevel } from "@/types/core";
 import { useCallback, useEffect, useState } from "react";
 
 const emptyRecords: CoreRecords = {
   customers: [],
+  contacts: [],
+  machines: [],
+  rfqs: [],
   jobs: [],
   issues: [],
   activityEvents: [],
@@ -73,6 +78,15 @@ export function useCoreRecords() {
     await refresh();
   }
 
+  async function addRfq(input: CreateRfqInput) {
+    if (!company?.id) {
+      return;
+    }
+
+    await createRfq(company.id, input);
+    await refresh();
+  }
+
   async function setJobState(
     job: Job,
     state: {
@@ -112,6 +126,7 @@ export function useCoreRecords() {
     ...records,
     addIssue,
     addJob,
+    addRfq,
     closeIssue,
     error,
     loading,

@@ -23,6 +23,15 @@ export type JobStatus =
 
 export type RiskLevel = "low" | "medium" | "high";
 
+export type RfqStatus =
+  | "draft"
+  | "intake_review"
+  | "ready_for_capability_check"
+  | "capability_review"
+  | "ready_to_quote"
+  | "quoted"
+  | "declined";
+
 export type Job = {
   id: string;
   companyId?: string;
@@ -49,6 +58,8 @@ export type Issue = {
   id: string;
   companyId?: string;
   jobId?: string;
+  machineId?: string;
+  scope?: "job" | "machine" | "sitewide";
   title: string;
   severity: RiskLevel;
   target: string;
@@ -56,6 +67,7 @@ export type Issue = {
   status: "open" | "resolved";
   type?: string;
   notes?: string;
+  source?: "manual" | "chat" | "corvus";
   createdAt?: unknown;
   updatedAt?: unknown;
 };
@@ -82,6 +94,31 @@ export type Customer = {
   updatedAt?: unknown;
 };
 
+export type Contact = {
+  id: string;
+  companyId: string;
+  customerId?: string;
+  customerName: string;
+  name: string;
+  email: string;
+  phone?: string;
+  notes?: string;
+  createdAt?: unknown;
+  updatedAt?: unknown;
+};
+
+export type Machine = {
+  id: string;
+  companyId: string;
+  name: string;
+  type: string;
+  status: "available" | "busy" | "down" | "unknown";
+  workEnvelope?: string;
+  notes?: string;
+  createdAt?: unknown;
+  updatedAt?: unknown;
+};
+
 export type FileRecord = {
   id: string;
   companyId: string;
@@ -94,7 +131,36 @@ export type FileRecord = {
   updatedAt?: unknown;
 };
 
-export type UserRole = "owner" | "manager" | "staff" | "inspector" | "shipping";
+export type Rfq = {
+  id: string;
+  companyId: string;
+  rfqNumber: string;
+  customerName: string;
+  contactName?: string;
+  contactEmail?: string;
+  partName: string;
+  partNumber?: string;
+  revision: string;
+  quantity: number;
+  material: string;
+  requestedDueDate?: string;
+  status: RfqStatus;
+  sourceText: string;
+  notes?: string;
+  extractedSummary?: string;
+  missingInfo?: string[];
+  riskNotes?: string[];
+  createdAt?: unknown;
+  updatedAt?: unknown;
+};
+
+export type UserRole =
+  | "admin"
+  | "owner"
+  | "manager"
+  | "staff"
+  | "inspector"
+  | "shipping";
 
 export type UserProfile = {
   id: string;

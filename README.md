@@ -50,7 +50,20 @@ Chunk 2 completed:
 - Added Command Center metrics and job board based on real Firestore records.
 - Added a seed-demo-records path so local testing can populate a simulated machine shop after onboarding.
 
-The codebase is intentionally still a starter. Company onboarding and core job records now write to Firestore, but RFQ intake, file upload/storage, quote/PO flow, quality signoff, shipping readiness, chat, and the agent framework are not implemented yet.
+Thursday sprint checkpoint completed:
+
+- Added `admin` as a role and bootstrapped `mosesfuego@gmail.com` to admin on profile load.
+- Restricted simulation/demo controls to admin accounts.
+- Added RFQ, contact, and machine record types.
+- Added Firestore-backed RFQ list and RFQ detail pages.
+- Added manual RFQ creation with pasted customer request text.
+- Added an admin-only simulated RFQ button.
+- Made RFQ creation grow lightweight customer/contact memory when new customer/contact data appears.
+- Added machine linkage fields for issues so blockers can become job, machine, or sitewide issues.
+- Added RFQs to the app navigation and Command Center metrics.
+- Added an agent-ready folder structure with shared agent types, registry, orchestrator entry point, and the first Intake Extraction Worker stub.
+
+The codebase is intentionally still a starter. Company onboarding, core job records, and manual RFQ intake now write to Firestore. The agent scaffold exists, but LLM/API wiring, file upload/storage, quote/PO flow, quality signoff, shipping readiness, and chat are not implemented yet.
 
 ## Current Product State
 
@@ -66,11 +79,13 @@ The app currently includes:
 - First-login company/shop onboarding
 - Structured capability profile capture and editing
 - Firestore-backed jobs board
+- Firestore-backed RFQ intake list and detail pages
 - Job detail pages with stage flow, status controls, issues, and activity
 - Issues page
 - Customers page
 - Seedable demo data for jobs, issues, activity, and job flow
 - Founding product/agent documents
+- Agent scaffold under `src/agents`
 
 ## Founding Documents
 
@@ -196,7 +211,7 @@ npm run typecheck
 
 Follow [`CORVUS_LITE_BUILD_INSTRUCTIONS.md`](./founding%20documents/CORVUS_LITE_BUILD_INSTRUCTIONS.md):
 
-1. Tighten Phase 2 data-model gaps that matter before RFQ intake: issue scope, machine linkage, contact records, and future file metadata.
-2. Continue into Phase 5 RFQ/job intake.
-3. Add Phase 6 file upload only when Firebase Storage is initialized.
-4. Keep agent work deferred until deterministic RFQ, job, issue, and file workflows are useful.
+1. Connect the RFQ Intake Extraction Worker to the chosen LLM API.
+2. Add human review UI for extracted RFQ fields before writing changes.
+3. Add capability-check UI and worker using the stored company capability profile.
+4. Add Phase 6 file upload only when Firebase Storage is initialized.

@@ -7,6 +7,7 @@ import {
   Factory,
   FileText,
   Gauge,
+  Inbox,
   LogOut,
   PackageCheck,
   Settings,
@@ -18,6 +19,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 const navItems = [
   { href: "/command-center", label: "Command Center", icon: Gauge },
+  { href: "/rfqs", label: "RFQs", icon: Inbox },
   { href: "/jobs", label: "Jobs", icon: ClipboardList },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/issues", label: "Issues", icon: ClipboardList },
