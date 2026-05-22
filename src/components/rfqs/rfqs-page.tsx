@@ -48,8 +48,8 @@ export function RfqsPageContent() {
           </p>
           <h1 className="mt-1 text-3xl font-semibold text-slate-950">RFQs</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-            Capture messy customer requests as structured RFQ packages. The next
-            step is wiring the intake extraction worker to draft this from text.
+            Paste messy customer requests and let Corvus draft the RFQ package.
+            Human-reviewed fields are saved only after you inspect the draft.
           </p>
         </div>
 
@@ -138,9 +138,9 @@ export function RfqsPageContent() {
             Thursday scope
           </div>
           <p className="mt-2 leading-6">
-            Today this is manual intake plus admin simulation. The next layer is
-            the intake extraction worker: paste messy text, return structured
-            fields, then require human review before saving.
+            Today this is paste-first intake plus admin simulation. The future
+            email intake worker can watch an inbox, classify likely RFQs, and
+            route draft intake packages here without copy/paste.
           </p>
         </div>
       ) : null}

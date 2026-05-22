@@ -12,10 +12,11 @@ Rules for future agents:
 
 Current workers:
 
-- `intake-extraction`: RFQ text extraction scaffold. LLM wiring comes next.
+- `intake-extraction`: live RFQ text extraction worker. It drafts structured fields from pasted customer request text and requires human review before saving.
 
 Next intended workers:
 
+- `email-intake`: monitors inbound email later, classifies likely RFQs, and routes draft intake packages to the RFQ queue for review.
 - `capability-check`
 - `quote-prep`
 - `po-compare`
